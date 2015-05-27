@@ -13,7 +13,8 @@ import com.vaadin.shared.ui.Connect;
 import elemental.json.JsonObject;
 
 @Connect(ContextClickExtension.class)
-public class ContextClickConnector extends AbstractGridExtensionConnector {
+public class ContextClickExtensionConnector extends
+        AbstractGridExtensionConnector {
 
     @Override
     protected void extend(ServerConnector target) {
