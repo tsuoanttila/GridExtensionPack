@@ -56,9 +56,6 @@ public class DemoUI extends UI {
         // Show page number 3 initially; Pages are 0-based indices
         controls.setPage(3);
 
-        final Table table = new Table();
-        table.setContainerDataSource(container);
-        table.setPageLength(5);
         final Grid grid = new Grid(container);
 
         // Make grid display just the 5 rows.
@@ -165,9 +162,6 @@ public class DemoUI extends UI {
                 controls.nextPage();
             }
         }));
-
-        layout.addComponent(table);
-        layout.setComponentAlignment(table, Alignment.MIDDLE_CENTER);
 
         layout.addComponent(pageControls);
         layout.setComponentAlignment(pageControls, Alignment.BOTTOM_CENTER);

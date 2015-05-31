@@ -5,7 +5,7 @@
 	<groupId>org.vaadin</groupId>
 	<artifactId>gridextensionpack</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>GridExtensionPack Add-on</name>
 
 	<properties>
@@ -19,7 +19,7 @@
 		<Implementation-Title>${project.name}</Implementation-Title>
 		<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
 		<Vaadin-License-Title>Apache License 2.0</Vaadin-License-Title>
-		<Vaadin-Addon>${artifactId}-${project.version}.jar</Vaadin-Addon>
+		<Vaadin-Addon>${project.artifactId}-${project.version}.jar</Vaadin-Addon>
 	</properties>
 
     <!--     

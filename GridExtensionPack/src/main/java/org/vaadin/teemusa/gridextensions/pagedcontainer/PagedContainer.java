@@ -173,7 +173,8 @@ public class PagedContainer extends AbstractContainer implements Container,
     private int pageLength = 25;
     private int startIndex = 0;
     private int page = 0;
-    ItemSetChangeListener listener = new ItemSetChangeListener() {
+    
+    private ItemSetChangeListener listener = new ItemSetChangeListener() {
         @Override
         public void containerItemSetChange(ItemSetChangeEvent event) {
             if (event instanceof ItemAddEvent) {
@@ -212,7 +213,7 @@ public class PagedContainer extends AbstractContainer implements Container,
      * @return paging controls
      */
     public PagingControls getPagingControls() {
-        return new PagingControls();
+        return controls;
     }
 
     public Container.Indexed getContainer() {

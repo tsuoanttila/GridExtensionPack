@@ -5,7 +5,7 @@
 	<groupId>org.vaadin</groupId>
 	<artifactId>gridextensionpack-demo</artifactId>
 	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>GridExtensionPack Add-on Demo</name>
 
 	<properties>
@@ -87,7 +87,7 @@
 		<dependency>
 			<groupId>org.vaadin</groupId>
 			<artifactId>gridextensionpack</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
