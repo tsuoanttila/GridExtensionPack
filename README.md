@@ -77,13 +77,37 @@ GridExtensionPack is written by Teemu Suo-Anttila
 
 ## Getting started
 
-Here is a simple example on how to try out the add-on component:
+Here is a simple example on how to try out an extension in this add-on:
 
 ```java
 Grid grid = new Grid();
 new ContextMenuExtension(grid).addContextClickListener(/* Insert 
 context click listener here */);
 ```
+
+Using the PagedContainer needs an existing Indexed container to wrap:
+
+```java
+// This is your existing container
+Container.Indexed myContainer;
+PagedContainer container = new PagedContainer(myContainer);
+Grid grid = new Grid(container);
+
+// PagedContainer has a helper class for page manipulation
+PagingControls controls = container.getPagingControls();
+
+// Set Grid and container to same page size
+grid.setHeightMode(HeightMode.ROW)
+grid.setHeightByRows(5);
+controls.setPageLength(5);
+
+// Jump to fourth page (0-based indexing)
+controls.setPage(3);
+
+// Jump to next (fifth) page
+controls.nextPage();
+```
+
 For a more comprehensive example, see DemoUI.java in GridExtensionPack-demo
 
 ## Features
