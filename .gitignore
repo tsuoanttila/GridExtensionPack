@@ -1,6 +1,6 @@
 '### Vaadin
 **/VAADIN/widgetsets/
-
+**/VAADIN/themes/**/*.cache
 ### OS X
 .DS_Store
 .AppleDouble
