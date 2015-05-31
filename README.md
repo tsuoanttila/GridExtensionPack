@@ -79,10 +79,11 @@ GridExtensionPack is written by Teemu Suo-Anttila
 
 Here is a simple example on how to try out the add-on component:
 
+```java
 Grid grid = new Grid();
 new ContextMenuExtension(grid).addContextClickListener(/* Insert 
 context click listener here */);
-
+```
 For a more comprehensive example, see DemoUI.java in GridExtensionPack-demo
 
 ## Features
