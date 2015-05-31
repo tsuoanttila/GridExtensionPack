@@ -85,7 +85,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.vaadin</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>gridextensionpack</artifactId>
 			<version>${project.version}</version>
 		</dependency>
