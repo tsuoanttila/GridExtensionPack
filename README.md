@@ -12,9 +12,9 @@ Official releases of this add-on are available at Vaadin Directory. For Maven in
 
 ## Building and running demo
 
-git clone <url of the MyComponent repository>
+git clone <url of the GridExtensionPack repository>
 mvn clean install
-cd demo
+cd GridExtensionPack-demo
 mvn jetty:run
 
 To see the demo, navigate to http://localhost:8080/
@@ -48,9 +48,10 @@ Another way of debugging client-side is superdev mode. To enable it, uncomment d
 
 ## Release notes
 
-### Version 1.0-SNAPSHOT
+### Version 1.0
 - Server-side ContextClickEvent
 - Table-like client-side selection UX
+- PagedGridContainer
 
 ## Roadmap
 
@@ -100,6 +101,10 @@ This extension can be relatively easily made to work with ContextMenu addon for 
 
 TableSelectionModeExtension gives you client-side selection UX similar to Table. 
 It supports Multiple selection in simple mode and with ctrl + click.
+
+### PagedGridContainer
+
+A simple Container extension on top of any indexed container.
 
 ## API
 
