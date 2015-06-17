@@ -81,7 +81,7 @@ Here is a simple example on how to try out an extension in this add-on:
 
 ```java
 Grid grid = new Grid();
-new ContextMenuExtension(grid).addContextClickListener(/* Insert 
+ContextMenuExtension.extend(grid).addContextClickListener(/* Insert 
 context click listener here */);
 ```
 
