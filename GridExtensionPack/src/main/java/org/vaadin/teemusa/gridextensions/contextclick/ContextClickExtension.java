@@ -18,7 +18,7 @@ import com.vaadin.ui.Grid.AbstractGridExtension;
 public class ContextClickExtension extends AbstractGridExtension implements
         ContextClickNotifier {
 
-    public ContextClickExtension(final Grid grid) {
+    private ContextClickExtension(final Grid grid) {
         super(grid);
         registerRpc(new ContextClickRpc() {
             @Override
@@ -28,6 +28,17 @@ public class ContextClickExtension extends AbstractGridExtension implements
                         getColumn(columnId), details));
             }
         });
+    }
+
+    /**
+     * Constructs a new ContextClickExtension and extend given Grid with it.
+     * 
+     * @param grid
+     *            parent grid for extension
+     * @return constructed extension
+     */
+    public static ContextClickExtension extend(Grid grid) {
+        return new ContextClickExtension(grid);
     }
 
     @Override

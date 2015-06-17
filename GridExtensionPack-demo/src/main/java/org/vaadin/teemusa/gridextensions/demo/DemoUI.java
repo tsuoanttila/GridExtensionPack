@@ -31,7 +31,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -70,8 +69,8 @@ public class DemoUI extends UI {
         layout.setComponentAlignment(grid, Alignment.MIDDLE_CENTER);
         setContent(layout);
 
-        new ContextClickExtension(grid)
-                .addContextClickListener(new ContextClickListener() {
+        ContextClickExtension.extend(grid).addContextClickListener(
+                new ContextClickListener() {
 
                     @Override
                     public void contextClick(ContextClickEvent event) {
@@ -81,8 +80,8 @@ public class DemoUI extends UI {
                     }
                 });
 
-        final TableSelectionExtension tableSelect = new TableSelectionExtension(
-                grid);
+        final TableSelectionExtension tableSelect = TableSelectionExtension
+                .extend(grid);
         tableSelect.setMode(TableSelectionMode.CTRL);
 
         HorizontalLayout tableSelectionControls = new HorizontalLayout();

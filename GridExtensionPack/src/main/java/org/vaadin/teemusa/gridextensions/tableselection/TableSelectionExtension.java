@@ -22,11 +22,28 @@ import com.vaadin.ui.Grid.SelectionMode;
 public class TableSelectionExtension extends AbstractGridExtension {
     private TableSelectionMode mode = TableSelectionMode.NONE;
 
-    public TableSelectionExtension(Grid grid) {
+    private TableSelectionExtension(Grid grid) {
         super(grid);
         grid.setSelectionMode(SelectionMode.MULTI);
     }
 
+    /**
+     * Constructs a new TableSelectionExtensions and extend given Grid with it.
+     * 
+     * @param grid
+     *            parent grid for extension
+     * @return constructed extension
+     */
+    public static TableSelectionExtension extend(Grid grid) {
+        return new TableSelectionExtension(grid);
+    }
+
+    /**
+     * Set the TableSelectionMode to use with this extension.
+     * 
+     * @param mode
+     *            table-like selection mode
+     */
     public void setMode(TableSelectionMode mode) {
         if (this.mode != mode) {
             getState().selectionMode = mode;
