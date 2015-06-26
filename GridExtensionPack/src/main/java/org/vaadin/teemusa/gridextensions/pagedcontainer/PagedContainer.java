@@ -63,9 +63,11 @@ public class PagedContainer extends AbstractContainer implements Container,
                 page = startIndex / pLength;
                 checkPageCount();
 
-                // Update Grid state
-                grid.setHeightByRows(pLength);
-                grid.setHeightMode(HeightMode.ROW);
+                if (grid != null) {
+                    // Update Grid state
+                    grid.setHeightByRows(pLength);
+                    grid.setHeightMode(HeightMode.ROW);
+                }
 
                 // Fire event if needed.
                 if (!setStartIndex()) {
@@ -218,6 +220,8 @@ public class PagedContainer extends AbstractContainer implements Container,
             ItemSetChangeNotifier notifier = (ItemSetChangeNotifier) container;
             notifier.addItemSetChangeListener(listener);
         }
+
+        controls = new PagingControls(null);
     }
 
     /**
@@ -243,9 +247,6 @@ public class PagedContainer extends AbstractContainer implements Container,
      *             if no Grid has been set for this container
      */
     public PagingControls getPagingControls() throws IllegalStateException {
-        if (controls == null) {
-            throw new IllegalStateException("No Grid set for this container");
-        }
         return controls;
     }
 

@@ -1,5 +1,7 @@
 package org.vaadin.teemusa.gridextensions.demo;
 
+import java.util.Random;
+
 import javax.servlet.annotation.WebServlet;
 
 import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState.TableSelectionMode;
@@ -23,7 +25,6 @@ import com.vaadin.data.Validator;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -50,16 +51,13 @@ public class DemoUI extends UI {
 
         // Set up the PagedGridContainer with a backing Container.Indexed
         final PagedContainer container = new PagedContainer(createContainer());
-        final PagingControls controls = container.getPagingControls();
-        controls.setPageLength(5);
-        // Show page number 3 initially; Pages are 0-based indices
-        controls.setPage(3);
 
         final Grid grid = new Grid(container);
 
-        // Make grid display just the 5 rows.
-        grid.setHeightMode(HeightMode.ROW);
-        grid.setHeightByRows(5);
+        final PagingControls controls = container.setGrid(grid);
+        controls.setPageLength(5);
+        // Show page number 3 initially; Pages are 0-based indices
+        controls.setPage(3);
 
         // Show it in the middle of the screen
         final VerticalLayout layout = new VerticalLayout();
@@ -163,6 +161,16 @@ public class DemoUI extends UI {
                 controls.nextPage();
             }
         }));
+        pageControls.addComponent(new Button("Random page length",
+                new ClickListener() {
+
+                    private Random r = new Random();
+
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        controls.setPageLength(3 + r.nextInt(8));
+                    }
+                }));
 
         layout.addComponent(pageControls);
         layout.setComponentAlignment(pageControls, Alignment.BOTTOM_CENTER);
