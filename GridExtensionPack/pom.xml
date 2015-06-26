@@ -5,12 +5,12 @@
 	<groupId>org.vaadin.teemusa</groupId>
 	<artifactId>gridextensionpack</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.0</version>
+	<version>0.2.1</version>
 	<name>GridExtensionPack Add-on</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vaadin.version>7.5.0.rc1</vaadin.version>
+		<vaadin.version>7.5.0</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 
 		<!-- ZIP Manifest fields -->

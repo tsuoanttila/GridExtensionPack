@@ -29,8 +29,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -72,11 +72,13 @@ public class DemoUI extends UI {
         ContextClickExtension.extend(grid).addContextClickListener(
                 new ContextClickListener() {
 
+                    private GridContextMenu menu = new GridContextMenu(grid);
+
                     @Override
                     public void contextClick(ContextClickEvent event) {
-                        Notification.show("Context click on "
-                                + event.getItemId() + " on property "
-                                + event.getPropertyId());
+                        menu.setItemId(event.getItemId());
+                        menu.setColumn(event.getColumn());
+                        menu.open(event.getClientX(), event.getClientY());
                     }
                 });
 
@@ -166,6 +168,11 @@ public class DemoUI extends UI {
         layout.setComponentAlignment(pageControls, Alignment.BOTTOM_CENTER);
 
         layout.setMargin(true);
+
+        grid.setEditorEnabled(true);
+        for (Column c : grid.getColumns()) {
+            c.setHidable(true);
+        }
     }
 
     private Indexed createContainer() {

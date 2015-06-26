@@ -13,7 +13,9 @@ import com.vaadin.data.Container.Sortable;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractContainer;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.Range;
+import com.vaadin.ui.Grid;
 
 /**
  * Container for Grid that provides paging.
@@ -31,8 +33,11 @@ public class PagedContainer extends AbstractContainer implements Container,
 
         private Set<PageChangeListener> pageChangeListeners = new HashSet<PageChangeListener>();
         private int pageCount;
+        private Grid grid;
 
-        public PagingControls() {
+        public PagingControls(Grid grid) {
+            this.grid = grid;
+            setPageLength(25);
             pageCount = calculatePageCount();
         }
 
@@ -57,7 +62,15 @@ public class PagedContainer extends AbstractContainer implements Container,
                 pageLength = pLength;
                 page = startIndex / pLength;
                 checkPageCount();
-                setStartIndex();
+
+                // Update Grid state
+                grid.setHeightByRows(pLength);
+                grid.setHeightMode(HeightMode.ROW);
+
+                // Fire event if needed.
+                if (!setStartIndex()) {
+                    fireItemSetChange();
+                }
             }
         }
 
@@ -131,13 +144,15 @@ public class PagedContainer extends AbstractContainer implements Container,
             return (int) Math.ceil(((double) container.size()) / pageLength);
         }
 
-        private void setStartIndex() {
+        private boolean setStartIndex() {
             int newStartIndex = page * pageLength;
             if (startIndex != newStartIndex) {
                 startIndex = newStartIndex;
                 fireItemSetChange();
                 firePageChangeEvent();
+                return true;
             }
+            return false;
         }
 
         private void checkPageCount() {
@@ -170,10 +185,10 @@ public class PagedContainer extends AbstractContainer implements Container,
 
     private final Container.Indexed container;
     private PagingControls controls;
-    private int pageLength = 25;
+    private int pageLength = 0;
     private int startIndex = 0;
     private int page = 0;
-    
+
     private ItemSetChangeListener listener = new ItemSetChangeListener() {
         @Override
         public void containerItemSetChange(ItemSetChangeEvent event) {
@@ -198,7 +213,6 @@ public class PagedContainer extends AbstractContainer implements Container,
 
     public PagedContainer(final Container.Indexed container) {
         this.container = container;
-        controls = new PagingControls();
 
         if (container instanceof ItemSetChangeNotifier) {
             ItemSetChangeNotifier notifier = (ItemSetChangeNotifier) container;
@@ -207,12 +221,31 @@ public class PagedContainer extends AbstractContainer implements Container,
     }
 
     /**
+     * Sets the Grid that uses this container as its data source. This method
+     * generates a PagingControls for managing the Container along with the
+     * Grid.
+     * 
+     * @param grid
+     *            grid using this data source
+     */
+    public PagingControls setGrid(Grid grid) {
+        controls = new PagingControls(grid);
+        return getPagingControls();
+    }
+
+    /**
      * Gets a {@link PagingControls} helper. Page changes are done through this
      * helper.
      * 
      * @return paging controls
+     * 
+     * @throws IllegalStateException
+     *             if no Grid has been set for this container
      */
-    public PagingControls getPagingControls() {
+    public PagingControls getPagingControls() throws IllegalStateException {
+        if (controls == null) {
+            throw new IllegalStateException("No Grid set for this container");
+        }
         return controls;
     }
 
