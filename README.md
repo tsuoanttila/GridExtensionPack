@@ -94,11 +94,9 @@ PagedContainer container = new PagedContainer(myContainer);
 Grid grid = new Grid(container);
 
 // PagedContainer has a helper class for page manipulation
-PagingControls controls = container.getPagingControls();
+PagingControls controls = container.setGrid(grid);
 
-// Set Grid and container to same page size
-grid.setHeightMode(HeightMode.ROW)
-grid.setHeightByRows(5);
+// Set container (and grid with it) to certain size
 controls.setPageLength(5);
 
 // Jump to fourth page (0-based indexing)
