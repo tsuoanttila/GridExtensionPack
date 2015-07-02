@@ -21,7 +21,7 @@ public class SidebarMenuExtension extends AbstractGridExtension {
     public Map<Command, Integer> commandToIdMap = new HashMap<Command, Integer>();
     Integer nextId = 0;
 
-    public SidebarMenuExtension(Grid grid) {
+    private SidebarMenuExtension(Grid grid) {
         super(grid);
         registerRpc(new SidebarMenuExtensionServerRpc() {
 
@@ -93,5 +93,16 @@ public class SidebarMenuExtension extends AbstractGridExtension {
 
     public interface Command {
         public void trigger();
+    }
+
+    /**
+     * Constructs a new SidebarMenuExtension and extend given Grid with it.
+     * 
+     * @param grid
+     *            parent grid for extension
+     * @return constructed extension
+     */
+    public static SidebarMenuExtension extend(Grid grid) {
+        return new SidebarMenuExtension(grid);
     }
 }

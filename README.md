@@ -40,17 +40,18 @@ permanently ignored in your project. Do not worry, the project still works fine.
 
 ## Release notes
 
-### Version 1.0
+### Version 0.2.2
 - Server-side ContextClickEvent
 - Table-like client-side selection UX
 - PagedContainer
+- SidebarMenuExtension
 
 ## Roadmap
 
 This component is developed as a hobby with no public roadmap or any guarantees 
 of upcoming releases. That said, the following features are planned for upcoming 
 releases:
-- Custom server-side extension for Grid SidebarMenu items
+- Not much for now
 
 ## Issue tracking
 
@@ -72,6 +73,8 @@ such. Process for contributing is the following:
 Add-on is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
 
 GridExtensionPack is written by Teemu Suo-Anttila
+
+SidebarMenuExtension is written by Anna Koskinen
 
 # Developer Guide
 
@@ -131,6 +134,13 @@ paging and provides its own PagingControls for a cleaner API.
 
 This also works with Table, but I don't intend to track any possible 
 issues with it.
+
+### SidebarMenuExtension
+
+This extension provides a way to add custom items in the Grids 
+SidebarMenu. Setting styles and custom captions along with running 
+certain code when the menu item is clicked, this is the easiest way to 
+get your special actions in to said menu.
 
 ## API
 

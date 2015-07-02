@@ -5,7 +5,7 @@
     <groupId>org.vaadin.teemusa</groupId>
     <artifactId>gridextensionpack-demo</artifactId>
     <packaging>war</packaging>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
     <name>GridExtensionPack Add-on Demo</name>
 
     <properties>

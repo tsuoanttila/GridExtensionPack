@@ -143,7 +143,7 @@ public class SidebarMenuExtensionLayout extends VerticalLayout {
         grid.setColumnReorderingAllowed(true);
         grid.setColumnOrder("filename", "open", "download");
         addComponent(grid);
-        extension = new SidebarMenuExtension(grid);
+        extension = SidebarMenuExtension.extend(grid);
     }
 
     private Object createOpenLink() {
