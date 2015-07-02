@@ -33,4 +33,22 @@ $darkgreen: darken($green, 30%);
              0px 34px 30px rgba(0,0,0,0.1);
         text-align: center;
 	}
+	
+    .sidebarExtensionLayout {
+       	
+       	.blue, .mixed {
+			background: blue;
+			color: white;
+       	}
+		
+       	.red, .mixed {
+       	    background: red;
+       	}
+       	
+       	.divider, .divider:hover {
+       	    height: 3px;
+       	    background: black;
+       	    cursor: default;
+       	}
+    }
 }
