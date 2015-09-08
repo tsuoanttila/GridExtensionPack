@@ -84,7 +84,7 @@ Here is a simple example on how to try out an extension in this add-on:
 
 ```java
 Grid grid = new Grid();
-ContextMenuExtension.extend(grid).addContextClickListener(/* Insert 
+ContextClickExtension.extend(grid).addContextClickListener(/* Insert 
 context click listener here */);
 ```
 
@@ -113,9 +113,9 @@ For a more comprehensive example, see DemoUI.java in GridExtensionPack-demo
 
 ## Features
 
-### ContextMenuExtension
+### ContextClickExtension
 
-ContextMenuExtension catches the context menu events targeting the body 
+ContextClickExtension catches the context menu events targeting the body 
 of Grid, and sends events similar to ItemClickEvent.
 
 This extension can be relatively easily made to work with ContextMenu 
