@@ -52,12 +52,6 @@ public class TableSelectionExtension extends AbstractGridExtension {
     }
 
     @Override
-    public void remove() {
-        getState().selectionMode = TableSelectionMode.NONE;
-        super.remove();
-    }
-
-    @Override
     public Class<? extends SharedState> getStateType() {
         return TableSelectionState.class;
     }

@@ -13,8 +13,8 @@ import com.vaadin.shared.ui.Connect;
 import elemental.json.JsonObject;
 
 @Connect(TableSelectionExtension.class)
-public class TableSelectionExtensionConnector extends
-        AbstractGridExtensionConnector {
+public class TableSelectionExtensionConnector
+        extends AbstractGridExtensionConnector {
 
     private HandlerRegistration clickHandler;
 
@@ -49,5 +49,15 @@ public class TableSelectionExtensionConnector extends
 
     public TableSelectionState getState() {
         return (TableSelectionState) super.getState();
+    }
+
+    @Override
+    public void onUnregister() {
+        if (clickHandler != null) {
+            clickHandler.removeHandler();
+            clickHandler = null;
+        }
+
+        super.onUnregister();
     }
 }

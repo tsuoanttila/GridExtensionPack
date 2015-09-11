@@ -72,12 +72,12 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
         for (Entry<Integer, String> entry : new HashSet<Entry<Integer, String>>(
                 styleMap.entrySet())) {
             if (menuItemMap.containsKey(entry.getKey())) {
-                menuItemMap.get(entry.getKey()).removeStyleName(
-                        entry.getValue());
+                menuItemMap.get(entry.getKey())
+                        .removeStyleName(entry.getValue());
             }
             if (!getState().styleMap.containsKey(entry.getKey())
-                    || !getState().styleMap.get(entry.getKey()).equals(
-                            entry.getValue())) {
+                    || !getState().styleMap.get(entry.getKey())
+                            .equals(entry.getValue())) {
                 styleMap.remove(entry.getKey());
             }
         }
@@ -105,5 +105,14 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
     @Override
     public SidebarMenuExtensionState getState() {
         return (SidebarMenuExtensionState) super.getState();
+    }
+
+    @Override
+    public void onUnregister() {
+        for (MenuItem menuItem : menuItemMap.values()) {
+            getGrid().getSidebarMenu().removeItem(menuItem);
+        }
+
+        super.onUnregister();
     }
 }

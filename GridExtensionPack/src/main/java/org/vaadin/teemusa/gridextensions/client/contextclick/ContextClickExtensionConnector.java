@@ -5,6 +5,7 @@ import org.vaadin.teemusa.gridextensions.contextclick.ContextClickExtension;
 
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.widget.grid.EventCellReference;
@@ -13,19 +14,21 @@ import com.vaadin.shared.ui.Connect;
 import elemental.json.JsonObject;
 
 @Connect(ContextClickExtension.class)
-public class ContextClickExtensionConnector extends
-        AbstractGridExtensionConnector {
+public class ContextClickExtensionConnector
+        extends AbstractGridExtensionConnector {
+
+    private HandlerRegistration domHandler;
 
     @Override
     protected void extend(ServerConnector target) {
         getGrid().sinkEvents(Event.ONCONTEXTMENU);
-        getGrid().addDomHandler(new ContextMenuHandler() {
+        domHandler = getGrid().addDomHandler(new ContextMenuHandler() {
 
             @Override
             public void onContextMenu(ContextMenuEvent event) {
                 EventCellReference<JsonObject> cell = getGrid().getEventCell();
-                if (cell.isBody()
-                        && hasEventListener(ContextClickRpc.CONTEXT_CLICK_EVENT_ID)) {
+                if (cell.isBody() && hasEventListener(
+                        ContextClickRpc.CONTEXT_CLICK_EVENT_ID)) {
                     event.preventDefault();
                     ContextClickRpc rpc = getRpcProxy(ContextClickRpc.class);
                     rpc.contextClick(getRowKey(cell.getRow()),
@@ -35,5 +38,14 @@ public class ContextClickExtensionConnector extends
             }
 
         }, ContextMenuEvent.getType());
+    }
+
+    @Override
+    public void onUnregister() {
+        if (domHandler != null) {
+            domHandler.removeHandler();
+            domHandler = null;
+        }
+        super.onUnregister();
     }
 }
