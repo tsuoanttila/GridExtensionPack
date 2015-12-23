@@ -4,8 +4,6 @@ import com.vaadin.shared.communication.ClientRpc;
 
 public interface WrappingClientRPC extends ClientRpc  {
 
-	public void enableWrapping();
-	
-	public void disableWrapping();
+	public void setWrapping(boolean enable);
 	
 }

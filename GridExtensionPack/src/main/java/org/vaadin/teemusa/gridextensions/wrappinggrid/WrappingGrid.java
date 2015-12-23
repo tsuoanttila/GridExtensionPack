@@ -15,11 +15,7 @@ public class WrappingGrid extends AbstractExtension {
 	}
 	
 	public void setWrapping(boolean enable) {
-		if(enable) {
-			getRpcProxy(WrappingClientRPC.class).enableWrapping();
-		} else {
-			getRpcProxy(WrappingClientRPC.class).disableWrapping();
-		}
+		getRpcProxy(WrappingClientRPC.class).setWrapping(enable);
 	}
 	
 }
