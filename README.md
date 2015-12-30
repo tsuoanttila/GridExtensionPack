@@ -142,6 +142,17 @@ SidebarMenu. Setting styles and custom captions along with running
 certain code when the menu item is clicked, this is the easiest way to 
 get your special actions in to said menu.
 
+### WrappingGridExtension
+
+This extension makes possible to wrap text in headers. Sometimes you
+need long header description in columns where the data content is short
+(e.g. number). With this extension you can enable wrapping text in
+header row and it auto adjusts the header row height accordingly. If 
+you use this extension, you need to set fixed widths to columns, since 
+otherwise it is not possible reliably calculate needed height of the 
+header row. 
+
+
 ## API
 
 No online JavaDoc available (for now at least).
