@@ -12,27 +12,26 @@ import com.vaadin.ui.Grid.Column;
  */
 public class ContextClickEvent extends ItemClickEvent {
 
-    ContextClickEvent(Grid source, Object itemId, Column column,
-            MouseEventDetails details) {
-        super(source, source.getContainerDataSource().getItem(itemId), itemId,
-                column.getPropertyId(), details);
-    }
+	ContextClickEvent(Grid source, Object itemId, Column column, MouseEventDetails details) {
+		super(source, source.getContainerDataSource().getItem(itemId), itemId,
+				column != null ? column.getPropertyId() : null, details);
+	}
 
-    /**
-     * Gets the column that was clicked.
-     * 
-     * @return column of Grid
-     */
-    public Column getColumn() {
-        return getSource().getColumn(getPropertyId());
-    }
+	/**
+	 * Gets the column that was clicked.
+	 * 
+	 * @return column of Grid
+	 */
+	public Column getColumn() {
+		return getSource().getColumn(getPropertyId());
+	}
 
-    /**
-     * Gets the source Grid.
-     * 
-     * @return Grid
-     */
-    public Grid getSource() {
-        return (Grid) super.getSource();
-    }
+	/**
+	 * Gets the source Grid.
+	 * 
+	 * @return Grid
+	 */
+	public Grid getSource() {
+		return (Grid) super.getSource();
+	}
 }
