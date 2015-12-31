@@ -3,9 +3,6 @@ package org.vaadin.teemusa.gridextensions.demo;
 import java.util.Random;
 
 import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState.TableSelectionMode;
-import org.vaadin.teemusa.gridextensions.contextclick.ContextClickEvent;
-import org.vaadin.teemusa.gridextensions.contextclick.ContextClickExtension;
-import org.vaadin.teemusa.gridextensions.contextclick.ContextClickListener;
 import org.vaadin.teemusa.gridextensions.pagedcontainer.PageChangeEvent;
 import org.vaadin.teemusa.gridextensions.pagedcontainer.PageChangeListener;
 import org.vaadin.teemusa.gridextensions.pagedcontainer.PagedContainer;
@@ -18,12 +15,15 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.ContextClickEvent;
+import com.vaadin.event.ContextClickEvent.ContextClickListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Grid.GridContextClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -48,14 +48,16 @@ public class DemoContentLayout extends VerticalLayout {
 		addComponent(grid);
 		setComponentAlignment(grid, Alignment.MIDDLE_CENTER);
 
-		ContextClickExtension.extend(grid).addContextClickListener(new ContextClickListener() {
+		// TODO: Change this to use the new Vaadin ContextMenu Add-on
+		grid.addContextClickListener(new ContextClickListener() {
 
 			private GridContextMenu menu = new GridContextMenu(grid);
 
 			@Override
 			public void contextClick(ContextClickEvent event) {
-				menu.setItemId(event.getItemId());
-				menu.setColumn(event.getColumn());
+				GridContextClickEvent e = (GridContextClickEvent) event;
+				menu.setItemId(e.getItemId());
+				menu.setColumn(grid.getColumn(e.getPropertyId()));
 				menu.open(event.getClientX(), event.getClientY());
 			}
 		});

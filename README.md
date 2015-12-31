@@ -159,3 +159,5 @@ No online JavaDoc available (for now at least).
 ## Changes since 0.2
 ### Version 0.3-SNAPSHOT
 - Table-like selection now in a SelectionModel, not an extension
+- ContextClickExtension dropped, since the functionality is now present in the Framework
+
