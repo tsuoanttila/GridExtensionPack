@@ -121,9 +121,9 @@ of Grid, and sends events similar to ItemClickEvent.
 This extension can be relatively easily made to work with ContextMenu 
 addon for displaying a custom context menu for the Grid.
 
-### TableSelectionModeExtension
+### TableSelectionModel
 
-TableSelectionModeExtension gives you client-side selection UX similar 
+TableSelectionModel gives you client-side selection UX similar 
 to Table. It supports Multiple selection in simple mode and with ctrl + 
 click.
 
@@ -152,7 +152,10 @@ you use this extension, you need to set fixed widths to columns, since
 otherwise it is not possible reliably calculate needed height of the 
 header row. 
 
-
 ## API
 
 No online JavaDoc available (for now at least).
+
+## Changes since 0.2
+### Version 0.3-SNAPSHOT
+- Table-like selection now in a SelectionModel, not an extension
