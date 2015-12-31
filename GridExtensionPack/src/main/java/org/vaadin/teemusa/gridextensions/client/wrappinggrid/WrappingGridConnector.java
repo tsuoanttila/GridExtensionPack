@@ -210,4 +210,21 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 		return null;
 	}
 
+	private native static void refresh(Grid<?> grid)
+	 /*-{    
+	   grid.@com.vaadin.client.widgets.Grid::refreshHeader()();
+	   grid.@com.vaadin.client.widgets.Grid::refreshBody()();
+	   grid.@com.vaadin.client.widgets.Grid::refreshFooter()();
+	 }-*/;
+
+   @Override
+   public void onUnregister() {
+		restoreOriginalSizeRules();
+		for (int i=1;i<grid.getColumnCount();i++) {
+			grid.getColumn(i).setWidth(-1);
+		}
+		grid.recalculateColumnWidths();
+		refresh(grid);
+		super.onUnregister();
+   }	
 }
