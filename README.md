@@ -152,6 +152,11 @@ you use this extension, you need to set fixed widths to columns, since
 otherwise it is not possible reliably calculate needed height of the 
 header row. 
 
+### GridRefresher
+
+A simple helper extension that gives you an API that you can use to
+force the repaint of a row.
+
 ## API
 
 No online JavaDoc available (for now at least).
@@ -160,4 +165,4 @@ No online JavaDoc available (for now at least).
 ### Version 0.3-SNAPSHOT
 - Table-like selection now in a SelectionModel, not an extension
 - ContextClickExtension dropped, since the functionality is now present in the Framework
-
+- GridRefresher extension that gives a helper to force repaint rows
