@@ -1,7 +1,5 @@
 package org.vaadin.teemusa.gridextensions.client.tableselection;
 
-import java.util.logging.Logger;
-
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.widget.grid.CellReference;
@@ -89,7 +87,10 @@ public class ShiftCtrlClickSelectionHandler extends CtrlClickSelectionHandler {
 			return;
 		}
 
+		// Stop selecting text for now.
 		WidgetUtil.setTextSelectionEnabled(grid.getElement(), false);
+		WidgetUtil.clearTextSelection();
+
 		// This works on the premise that grid fires the data available event to
 		// any newly added handlers.
 		boolean ctrlOrMeta = e.isControlKeyDown() || e.isMetaKeyDown();
