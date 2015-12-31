@@ -164,6 +164,7 @@
                     <persistentunitcachedir>${basedir}/target/tmp/gwt-unitCache</persistentunitcachedir>
                     <compileReport>true</compileReport>
                     <strict>true</strict>
+		    <style>PRETTY</style>
                     <runTarget>http://localhost:8080/</runTarget>
                 </configuration>
                 <executions>

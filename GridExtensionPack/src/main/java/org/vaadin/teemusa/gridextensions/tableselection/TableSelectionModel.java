@@ -1,15 +1,12 @@
 package org.vaadin.teemusa.gridextensions.tableselection;
 
-import java.util.Collection;
-
+import org.vaadin.teemusa.gridextensions.client.tableselection.ShiftSelectRpc;
 import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState;
 import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState.TableSelectionMode;
 
-import com.vaadin.shared.communication.SharedState;
+import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.AbstractSelectionModel;
 import com.vaadin.ui.Grid.MultiSelectionModel;
-import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Grid.SelectionModel;
 
 /**
@@ -45,5 +42,21 @@ public class TableSelectionModel extends MultiSelectionModel {
 	@Override
 	protected TableSelectionState getState(boolean markAsDirty) {
 		return (TableSelectionState) super.getState(markAsDirty);
+	}
+
+	@Override
+	protected void extend(AbstractClientConnector target) {
+		super.extend(target);
+		registerRpc(new ShiftSelectRpc() {
+
+			@Override
+			public void selectRange(int start, int length) {
+				if (length == 0) {
+					return;
+				}
+
+				select(getParentGrid().getContainerDataSource().getItemIds(start, length), false);
+			}
+		});
 	}
 }
