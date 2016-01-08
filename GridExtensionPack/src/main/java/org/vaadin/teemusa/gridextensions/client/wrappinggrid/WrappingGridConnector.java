@@ -29,6 +29,8 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 
 	private Grid<?> grid;
 
+	private double[] columnWidths;
+
 	public WrappingGridConnector() {
 		grid = null;
 	}
@@ -37,6 +39,12 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 	protected void extend(ServerConnector target) {
 		grid = (Grid<?>) ((ComponentConnector) target).getWidget();
 
+		int c = grid.getColumnCount();
+		columnWidths = new double[c+1];
+		for (int i=1;i<c;i++) {
+			columnWidths[i] = grid.getColumn(i).getWidth();			
+		}					
+		
 		WrappingClientRPC rpc = new WrappingClientRPC() {
 			@Override
 			public void setWrapping(boolean enable) {
@@ -210,4 +218,21 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 		return null;
 	}
 
+	private native static void refresh(Grid<?> grid)
+	 /*-{    
+	   grid.@com.vaadin.client.widgets.Grid::refreshHeader()();
+	   grid.@com.vaadin.client.widgets.Grid::refreshBody()();
+	   grid.@com.vaadin.client.widgets.Grid::refreshFooter()();
+	 }-*/;
+
+   @Override
+   public void onUnregister() {
+		restoreOriginalSizeRules();
+		for (int i=1;i<grid.getColumnCount();i++) {
+			grid.getColumn(i).setWidth(columnWidths[i]);
+		}
+		grid.recalculateColumnWidths();
+		refresh(grid);
+		super.onUnregister();
+   }	
 }
