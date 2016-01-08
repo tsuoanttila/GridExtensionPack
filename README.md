@@ -1,4 +1,4 @@
-# GridExtensionPack Add-on for Vaadin 7.5
+# GridExtensionPack Add-on for Vaadin
 
 GridExtensionPack is a collection of more or less useful extensions for tweaking 
 Grid UX.
@@ -40,7 +40,14 @@ permanently ignored in your project. Do not worry, the project still works fine.
 
 ## Release notes
 
-### 0.2.4
+### Version 1.0.0
+- Based on Vaadin 7.6
+- TableSelectionModel instead of a extension hack
+- TableSelectionModel now has simple Shift selection logic
+- GridRefresher for forcing redraw an item
+- Removed ContextClickExtension
+
+### Version 0.2.4
 - ContextClick and SidebarMenu bug fixes
 - Header wrapping extension
 
@@ -87,12 +94,12 @@ SidebarMenuExtension is written by Anna Koskinen
 
 ## Getting started
 
-Here is a simple example on how to try out an extension in this add-on:
-
+Every extension has it's own API that you can read from the classes. TableSelectionModel is
+(as the name indicates) a SelectionModel. Use it like this
 ```java
-Grid grid = new Grid();
-ContextClickExtension.extend(grid).addContextClickListener(/* Insert 
-context click listener here */);
+TableSelectionModel model = new TableSelectionModel();
+model.setMode(TableSelectionMode.SIMPLE);
+grid.setSelectionModel(model);
 ```
 
 Using the PagedContainer needs an existing Indexed container to wrap:
@@ -119,14 +126,6 @@ controls.nextPage();
 For a more comprehensive example, see DemoUI.java in GridExtensionPack-demo
 
 ## Features
-
-### ContextClickExtension
-
-ContextClickExtension catches the context menu events targeting the body 
-of Grid, and sends events similar to ItemClickEvent.
-
-This extension can be relatively easily made to work with ContextMenu 
-addon for displaying a custom context menu for the Grid.
 
 ### TableSelectionModel
 
@@ -167,9 +166,3 @@ force the repaint of a row.
 ## API
 
 No online JavaDoc available (for now at least).
-
-## Changes since 0.2
-### Version 0.3-SNAPSHOT
-- Table-like selection now in a SelectionModel, not an extension
-- ContextClickExtension dropped, since the functionality is now present in the Framework
-- GridRefresher extension that gives a helper to force repaint rows
