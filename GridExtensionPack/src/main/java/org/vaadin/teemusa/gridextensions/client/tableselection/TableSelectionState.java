@@ -1,13 +1,13 @@
 package org.vaadin.teemusa.gridextensions.client.tableselection;
 
-import com.vaadin.shared.communication.SharedState;
+import com.vaadin.shared.ui.grid.selection.MultiSelectionModelState;
 
-public class TableSelectionState extends SharedState {
+public class TableSelectionState extends MultiSelectionModelState {
 
-    public enum TableSelectionMode {
-        NONE, SIMPLE, CTRL
-    }
+	public enum TableSelectionMode {
+		NONE, SIMPLE, CTRL, SHIFT
+	}
 
-    public TableSelectionMode selectionMode = TableSelectionMode.NONE;
+	public TableSelectionMode selectionMode = TableSelectionMode.NONE;
 
 }

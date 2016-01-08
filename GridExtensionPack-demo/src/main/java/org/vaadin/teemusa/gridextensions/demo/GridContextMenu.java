@@ -1,6 +1,7 @@
 package org.vaadin.teemusa.gridextensions.demo;
 
 import org.vaadin.peter.contextmenu.ContextMenu;
+import org.vaadin.teemusa.gridextensions.refresher.GridRefresher;
 
 import com.vaadin.data.sort.Sort;
 import com.vaadin.ui.Grid;
@@ -11,9 +12,11 @@ public class GridContextMenu extends ContextMenu {
 	private Object itemId;
 	private Column column;
 
+	private GridRefresher refresher;
+
 	public GridContextMenu(final Grid grid) {
-		extend(grid);
-		setOpenAutomatically(false);
+		setParent(grid);
+		refresher = GridRefresher.extend(grid);
 
 		ContextMenuItem rowMenu = addItem("Rows");
 		rowMenu.addItem("Edit row").addItemClickListener(new ContextMenuItemClickListener() {
@@ -23,6 +26,14 @@ public class GridContextMenu extends ContextMenu {
 				if (grid.isEditorEnabled()) {
 					grid.editItem(itemId);
 				}
+			}
+		});
+
+		rowMenu.addItem("Repaint row").addItemClickListener(new ContextMenuItemClickListener() {
+
+			@Override
+			public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+				refresher.refresh(itemId);
 			}
 		});
 		rowMenu.addItem("Delete row").addItemClickListener(new ContextMenuItemClickListener() {
@@ -38,7 +49,7 @@ public class GridContextMenu extends ContextMenu {
 
 			@Override
 			public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-				if (column != null && column.isHidable()) {
+				if (column.isHidable()) {
 					column.setHidden(true);
 				}
 			}
@@ -47,7 +58,7 @@ public class GridContextMenu extends ContextMenu {
 
 			@Override
 			public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-				if (column != null && column.isSortable()) {
+				if (column.isSortable()) {
 					grid.sort(Sort.by(column.getPropertyId()));
 				}
 			}
@@ -63,6 +74,7 @@ public class GridContextMenu extends ContextMenu {
 	}
 
 	/**
+	 * 
 	 * @param column
 	 *            the column to set
 	 */
