@@ -11,6 +11,7 @@ public class GridContextMenu extends ContextMenu {
 
 	private Object itemId;
 	private Column column;
+
 	private GridRefresher refresher;
 
 	public GridContextMenu(final Grid grid) {
@@ -27,6 +28,7 @@ public class GridContextMenu extends ContextMenu {
 				}
 			}
 		});
+
 		rowMenu.addItem("Repaint row").addItemClickListener(new ContextMenuItemClickListener() {
 
 			@Override
@@ -72,6 +74,7 @@ public class GridContextMenu extends ContextMenu {
 	}
 
 	/**
+	 * 
 	 * @param column
 	 *            the column to set
 	 */

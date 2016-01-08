@@ -40,6 +40,13 @@ permanently ignored in your project. Do not worry, the project still works fine.
 
 ## Release notes
 
+### 0.2.4
+- ContextClick and SidebarMenu bug fixes
+- Header wrapping extension
+
+### Version 0.2.3
+- Bug fixes
+
 ### Version 0.2.2
 - Server-side ContextClickEvent
 - Table-like client-side selection UX
