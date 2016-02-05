@@ -12,34 +12,37 @@ import elemental.json.JsonObject;
 
 public class CtrlClickSelectionHandler implements BodyClickHandler {
 
-    private Grid<JsonObject> grid;
+	protected Grid<JsonObject> grid;
 
-    public CtrlClickSelectionHandler(Grid<JsonObject> grid) {
-        this.grid = grid;
-    }
+	public CtrlClickSelectionHandler(Grid<JsonObject> grid) {
+		this.grid = grid;
+	}
 
-    @Override
-    public void onClick(GridClickEvent event) {
-        SelectionModel<JsonObject> selectionModel = grid.getSelectionModel();
-        if (!(selectionModel instanceof Multi)) {
-            // Not multiselecting.
-            return;
-        }
+	@Override
+	public void onClick(GridClickEvent event) {
+		SelectionModel<JsonObject> selectionModel = grid.getSelectionModel();
+		if (!(selectionModel instanceof Multi)) {
+			// Not multiselecting.
+			return;
+		}
 
-        Multi<JsonObject> model = (Multi<JsonObject>) selectionModel;
-        CellReference<JsonObject> cell = grid.getEventCell();
-        JsonObject row = cell.getRow();
+		Multi<JsonObject> model = (Multi<JsonObject>) selectionModel;
+		CellReference<JsonObject> cell = grid.getEventCell();
 
-        NativeEvent e = event.getNativeEvent();
-        if (!e.getCtrlKey() && !e.getMetaKey()) {
-            model.deselectAll();
-        }
+		ctrlClickSelect(model, cell, event);
+	}
 
-        if (model.isSelected(row)) {
-            model.deselect(row);
-        } else {
-            model.select(row);
-        }
-    }
+	protected void ctrlClickSelect(Multi<JsonObject> model, CellReference<JsonObject> cell, GridClickEvent event) {
+		NativeEvent e = event.getNativeEvent();
+		JsonObject row = cell.getRow();
+		if (!e.getCtrlKey() && !e.getMetaKey()) {
+			model.deselectAll();
+		}
 
+		if (model.isSelected(row)) {
+			model.deselect(row);
+		} else {
+			model.select(row);
+		}
+	}
 }
