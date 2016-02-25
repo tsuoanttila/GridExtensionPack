@@ -40,6 +40,10 @@ permanently ignored in your project. Do not worry, the project still works fine.
 
 ## Release notes
 
+### Version 1.0.1
+- New version of header wrapping extension
+- Header wrapping is now compatible with resizable columns
+
 ### Version 1.0.0
 - Based on Vaadin 7.6
 - TableSelectionModel instead of a extension hack
@@ -153,10 +157,7 @@ get your special actions in to said menu.
 This extension makes possible to wrap text in headers. Sometimes you
 need long header description in columns where the data content is short
 (e.g. number). With this extension you can enable wrapping text in
-header row and it auto adjusts the header row height accordingly. If 
-you use this extension, you need to set fixed widths to columns, since 
-otherwise it is not possible reliably calculate needed height of the 
-header row. 
+header row and it auto adjusts the header row height accordingly.  
 
 ### GridRefresher
 

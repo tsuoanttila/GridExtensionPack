@@ -13,6 +13,9 @@ import com.vaadin.ui.VerticalLayout;
 
 public class HeaderWrapExtensionLayout extends VerticalLayout {
 
+	private static final String BUTTON_WRAPPING_ENABLED_TEXT = "Turn wrapping off";
+	private static final String BUTTON_WRAPPING_DISABLED_TEXT = "Turn wrapping on";
+
 	public HeaderWrapExtensionLayout() {
 
 		setMargin(true);
@@ -26,10 +29,16 @@ public class HeaderWrapExtensionLayout extends VerticalLayout {
 
 		generateData(grid, 5, 100);
 
+		Grid.HeaderRow headerRow = grid.prependHeaderRow();
+		headerRow.join(grid.getColumns().get(1).getPropertyId(), grid.getColumns().get(2).getPropertyId());
+
+		Grid.HeaderRow headerRow1 = grid.appendHeaderRow();
+		headerRow1.join(grid.getColumns().get(2).getPropertyId(), grid.getColumns().get(3).getPropertyId());
+		
 		grid.setWidth("100%");
 		grid.setHeight("100%");
 
-		Button button = new Button("Toggle grid column widths");
+		final Button button = new Button(BUTTON_WRAPPING_DISABLED_TEXT);
 		button.addClickListener(new Button.ClickListener() {
 			int state = 0;
 
@@ -39,20 +48,17 @@ public class HeaderWrapExtensionLayout extends VerticalLayout {
 				case 0:
 					// Disable wrapping, attempt to restore original behavior
 					wrap.setWrapping(false);
-					grid.getColumns().get(1).setWidthUndefined();
-					grid.getColumns().get(2).setWidthUndefined();
-					grid.getColumns().get(3).setWidthUndefined();
+					button.setCaption(BUTTON_WRAPPING_DISABLED_TEXT);
 					break;
 				case 1:
 					// Apply wrapping rules
 					wrap.setWrapping(true);
-					grid.getColumns().get(1).setWidth(200);
-					grid.getColumns().get(2).setWidth(150);
-					grid.getColumns().get(3).setWidth(100);
+					button.setCaption(BUTTON_WRAPPING_ENABLED_TEXT);
 					break;
 				}
 			}
 		});
+
 
 		addComponent(button);
 		addComponent(grid);

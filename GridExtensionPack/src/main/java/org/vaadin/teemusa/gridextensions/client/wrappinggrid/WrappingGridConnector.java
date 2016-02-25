@@ -4,14 +4,18 @@ import java.util.Arrays;
 
 import org.vaadin.teemusa.gridextensions.wrappinggrid.WrappingGrid;
 
+import com.google.gwt.animation.client.AnimationScheduler;
+import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
+import com.vaadin.client.widget.grid.events.ColumnResizeEvent;
+import com.vaadin.client.widget.grid.events.ColumnResizeHandler;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.shared.ui.Connect;
 
@@ -25,120 +29,141 @@ import com.vaadin.shared.ui.Connect;
 @Connect(WrappingGrid.class)
 public class WrappingGridConnector extends AbstractExtensionConnector {
 
-	private static final int DEFAULT_HEIGHT = 38;
+	protected static final int DEFAULT_HEIGHT = 38;
+
+	private static native double getWidth(Element e) /*-{
+		return e.offsetWidth;
+	}-*/;
+
+	private static native double getHeight(Element e) /*-{
+		return e.offsetHeight;
+	}-*/;
+
+	private static native double getNaturalHeight(Element e) /*-{
+		var cssh = e.style.height;
+		e.style.height = "";
+		var h = e.offsetHeight;
+		e.style.height = cssh;
+		return h;
+	}-*/;
+
+	private static native void addWrappingRules(Element e) /*-{
+		e.style.height = "100%";
+		e.style.wordWrap = "break-word";
+		e.style.whiteSpace = "normal";
+		e.style.overflow = "visible";
+		e.style.texOverflow = "clip";
+	}-*/;
+
+	private static native void removeWrappingRules(Element e) /*-{
+		e.style.height = @org.vaadin.teemusa.gridextensions.client.wrappinggrid.WrappingGridConnector::DEFAULT_HEIGHT;
+		e.style.wordWrap = "";
+		e.style.whiteSpace = "";
+		e.style.overflow = "";
+		e.style.texOverflow = "";
+	}-*/;
 
 	private Grid<?> grid;
-
-	private double[] columnWidths;
+	private boolean wrappingEnabled;
+	private HandlerRegistration resizeHandler;
 
 	public WrappingGridConnector() {
 		grid = null;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected void extend(ServerConnector target) {
 		grid = (Grid<?>) ((ComponentConnector) target).getWidget();
 
-		int c = grid.getColumnCount();
-		columnWidths = new double[c+1];
-		for (int i=1;i<c;i++) {
-			columnWidths[i] = grid.getColumn(i).getWidth();			
-		}					
-		
+		wrappingEnabled = false;
 		WrappingClientRPC rpc = new WrappingClientRPC() {
 			@Override
 			public void setWrapping(boolean enable) {
-				if (enable) {
-					applyWrapping();
-				} else {
-					restoreOriginalSizeRules();
+				if (wrappingEnabled != enable) {
+					wrappingEnabled = enable;
+					if (enable) {
+						applyStyle.execute(0);
+					} else {
+						disableWrapping();
+					}
 				}
 			}
 		};
 
 		registerRpc(WrappingClientRPC.class, rpc);
-	}
 
-	// Entry point for applying the wrapping cell style rules
-	private void applyWrapping() {
-		applyWrappingRules();
-	}
-
-	// Attempt to restore as much of the original state as possible
-	private void restoreOriginalSizeRules() {
-
-		// Remove all existing style from cells and set an explicit height
-		for (Element e : getGridParts("th")) {
-			String display = e.getStyle().getDisplay();
-			e.setAttribute("style", "height: " + DEFAULT_HEIGHT + "px;"
-					+ "display: " + display + ";");
-		}
-
-		// Restore header row style
-		for (Element e : getGridParts("tr", getGridPart("thead"))) {
-			String width = e.getStyle().getWidth();
-			e.setAttribute("style", "width: " + width + ";");
-		}
-
-		// Once reflow has taken place, use our function to measure a new
-		// maximum height
-		// for all header elements
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+		resizeHandler = grid.addColumnResizeHandler(new ColumnResizeHandler() {
 			@Override
-			public void execute() {
-				measureAndApplyHeaderSize();
-
-				// Finally, re-remove height from header so it doesn't derp out
-				for (Element e : getGridParts("tr", getGridPart("thead"))) {
-					String width = e.getStyle().getWidth();
-					String display = e.getStyle().getDisplay();
-					e.setAttribute("style", "width: " + width + ";"
-							+ "display:" + display + ";");
-				}
+			public void onColumnResize(ColumnResizeEvent event) {
+				Scheduler.get().scheduleFinally(new Scheduler.ScheduledCommand() {
+					@Override
+					public void execute() {
+						AnimationScheduler.get().requestAnimationFrame(applyStyle);						
+					}
+				});
 			}
 		});
 	}
 
-	// Apply CSS rules
-	private void applyWrappingRules() {
-
-		// Apply wrapping css rules to cells
-		for (Element e : getGridParts("th")) {
-			String width = e.getOffsetWidth() + "px";
-			String display = e.getStyle().getDisplay();
-			e.setAttribute("style", "width: " + width + ";height: 100%;"
-					+ "word-wrap: break-word;" + "white-space: normal;"
-					+ "overflow: visible;" + "text-overflow: clip;"
-					+ "display:" + display + ";");
-		}
-
-		// Remove any header row style
-		Element head = getGridPart("tr"); // <-- ONLY the first TR!
-		String width = head.getStyle().getWidth();
-		head.setAttribute("style", "width: " + width + ";");
-
-		// Continue processing after reflow has taken place
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				measureAndApplyHeaderSize();
-			}
-		});
+	@Override
+	public void onUnregister() {
+		assert (resizeHandler != null);
+		resizeHandler.removeHandler();
+		disableWrapping();
+		super.onUnregister();
 	}
 
-	// Go through all cells, finding the largest one. Once that's done,
-	// adjust all header elements to match that size, and adjust the rest
-	// of Grid's parts so that they match the new header height
-	private void measureAndApplyHeaderSize() {
+	/**
+	 * Go through all elements and remove wrapping rules, restoring normalcy
+	 */
+	private void disableWrapping() {
+		for (Element e : getGridParts("th")) {
+			removeWrappingRules(e);
+		}
 
-		// Measure new cell sizes per header row
+		for (Element row : getGridParts("tr", getGridPart("thead"))) {
+			row.getStyle().setHeight(DEFAULT_HEIGHT, Unit.PX);
+		}
+
+		setBodyStartY(grid.getHeaderRowCount() * DEFAULT_HEIGHT);
+	}
+
+	/**
+	 * Assume we're in a state where we can do all the necessary measurement and
+	 * CSS changes to facilitate wrapping style application
+	 */
+	private AnimationCallback applyStyle = new AnimationCallback() {
+		@Override
+		public void execute(double timestamp) {
+			if (!wrappingEnabled) {
+				return;
+			}
+
+			for (Element e : getGridParts("th")) {
+				addWrappingRules(e);
+			}
+
+			double[] heights = measureRowHeights();
+			double startY = setHeaderHeight(heights);
+			setBodyStartY(startY);
+		}
+	};
+
+	/**
+	 * Find maximum cell height per header row. A header row is at least as high
+	 * as defined by {@link #DEFAULT_HEIGHT}.
+	 * 
+	 * @return
+	 */
+	private double[] measureRowHeights() {
 		int rownum = 0;
-		int[] rowHeight = new int[grid.getHeaderRowCount()];
+		double[] rowHeight = new double[grid.getHeaderRowCount()];
 		Arrays.fill(rowHeight, DEFAULT_HEIGHT);
 		for (Element row : getGridParts("tr", getGridPart("thead"))) {
 			for (Element cell : getGridParts("th", row)) {
 				if (!cell.getStyle().getDisplay().equals("none")) {
-					int h = cell.getOffsetHeight();
+					double h = getNaturalHeight(cell);
 					if (h > rowHeight[rownum]) {
 						rowHeight[rownum] = h;
 					}
@@ -146,34 +171,58 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 			}
 			++rownum;
 		}
-
-		// Apply new header row heights
-		int totalHeaderHeight = 0;
-		rownum = 0;
-		for (Element row : getGridParts("tr", getGridPart("thead"))) {
-			row.getStyle().setHeight(rowHeight[rownum], Unit.PX);
-			totalHeaderHeight += rowHeight[rownum];
-			++rownum;
-		}
-
-		// Adjust body start position so header does not cover the data
-		Element body = getGridPart("tbody");
-		body.getStyle().setMarginTop(totalHeaderHeight, Unit.PX);
-
-		// Adjust scrollbar start position
-		Element scroll = findVerticalScrollbar();
-		scroll.getStyle().setTop(totalHeaderHeight, Unit.PX);
-
-		// Adjust scrollbar height
-		scroll.getStyle().setHeight(grid.getOffsetHeight() - totalHeaderHeight,
-				Unit.PX);
-
-		// Adjust header deco element
-		Element deco = findHeaderDeco();
-		deco.getStyle().setHeight(totalHeaderHeight, Unit.PX);
+		return rowHeight;
 	}
 
-	// Get elements in Grid by tag name
+	/**
+	 * Apply header height
+	 * 
+	 * @param rowHeights
+	 * @return
+	 */
+	private double setHeaderHeight(double[] rowHeights) {
+		double totalHeaderHeight = 0;
+		int rownum = 0;
+		for (Element row : getGridParts("tr", getGridPart("thead"))) {
+			row.getStyle().setHeight(rowHeights[rownum], Unit.PX);
+			totalHeaderHeight += getHeight(row);
+			++rownum;
+		}
+		return totalHeaderHeight;
+	}
+
+	/**
+	 * 
+	 * @param startY
+	 * @return
+	 */
+	private double setBodyStartY(double startY) {
+
+		// Adjust body position
+		Element body = getGridPart("tbody");
+		body.getStyle().setMarginTop(startY, Unit.PX);
+
+		// Adjust scrollbar position
+		for (Element e : getGridParts("div")) {
+			if (e.getClassName().contains("v-grid-scroller-vertical")) {
+				e.getStyle().setTop(startY, Unit.PX);
+				e.getStyle().setHeight(grid.getOffsetHeight() - startY, Unit.PX);
+				break;
+			}
+		}
+
+		// Adjust deco position
+		for (Element e : getGridParts("div")) {
+			if (e.getClassName().contains("v-grid-header-deco")) {
+				e.getStyle().setHeight(startY, Unit.PX);
+				break;
+			}
+		}
+
+		return startY;
+	}
+
+	// Get elements in Grid by tag name relative to parent element
 	private Element[] getGridParts(String elem, Element parent) {
 		NodeList<Element> elems = parent.getElementsByTagName(elem);
 		Element[] ary = new Element[elems.getLength()];
@@ -183,6 +232,7 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 		return ary;
 	}
 
+	// Get elements in Grid by tag name
 	private Element[] getGridParts(String elem) {
 		NodeList<Element> elems = grid.getElement().getElementsByTagName(elem);
 		Element[] ary = new Element[elems.getLength()];
@@ -197,42 +247,4 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 		return getGridParts(elem)[0];
 	}
 
-	// Go through grid parts until we find the so-called "header deco" element
-	// This thing sits as the last part of the header and right above the
-	// scrollbar
-	// and needs to have its size adjusted to match the header.
-	private Element findHeaderDeco() {
-		for (Element e : getGridParts("div")) {
-			if (e.getClassName().contains("v-grid-header-deco"))
-				return e;
-		}
-		return null;
-	}
-
-	// Go through grid parts until we find the vertical scrollbar
-	private Element findVerticalScrollbar() {
-		for (Element e : getGridParts("div")) {
-			if (e.getClassName().contains("v-grid-scroller-vertical"))
-				return e;
-		}
-		return null;
-	}
-
-	private native static void refresh(Grid<?> grid)
-	 /*-{    
-	   grid.@com.vaadin.client.widgets.Grid::refreshHeader()();
-	   grid.@com.vaadin.client.widgets.Grid::refreshBody()();
-	   grid.@com.vaadin.client.widgets.Grid::refreshFooter()();
-	 }-*/;
-
-   @Override
-   public void onUnregister() {
-		restoreOriginalSizeRules();
-		for (int i=1;i<grid.getColumnCount();i++) {
-			grid.getColumn(i).setWidth(columnWidths[i]);
-		}
-		grid.recalculateColumnWidths();
-		refresh(grid);
-		super.onUnregister();
-   }	
 }
