@@ -29,7 +29,7 @@ import com.vaadin.shared.ui.Connect;
 @Connect(WrappingGrid.class)
 public class WrappingGridConnector extends AbstractExtensionConnector {
 
-	protected static final int DEFAULT_HEIGHT = 38;
+	protected static int DEFAULT_HEIGHT = 38;
 
 	private static native double getWidth(Element e) /*-{
 		return e.offsetWidth;
@@ -42,7 +42,12 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 	private static native double getNaturalHeight(Element e) /*-{
 		var cssh = e.style.height;
 		e.style.height = "";
-		var h = e.offsetHeight;
+		var h = 0;
+		if(e.children.length > 0) {
+			h = e.children[0].offsetHeight;
+		} else {
+			h = e.offsetHeight;
+		}
 		e.style.height = cssh;
 		return h;
 	}-*/;
@@ -79,10 +84,12 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 		wrappingEnabled = false;
 		WrappingClientRPC rpc = new WrappingClientRPC() {
 			@Override
-			public void setWrapping(boolean enable) {
+			public void setWrapping(boolean enable, int defaultRowHeight) {
 				if (wrappingEnabled != enable) {
 					wrappingEnabled = enable;
+					DEFAULT_HEIGHT = defaultRowHeight;
 					if (enable) {
+						// Figure out default header height
 						applyStyle.execute(0);
 					} else {
 						disableWrapping();
@@ -147,9 +154,27 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 			double[] heights = measureRowHeights();
 			double startY = setHeaderHeight(heights);
 			setBodyStartY(startY);
+			AnimationScheduler.get().requestAnimationFrame(applyScrollBarHeight);						
 		}
 	};
 
+	/**
+	 * Scroll bar height adjustment cannot be done in same animation frame
+	 * hence create own animation frame for it
+	 */
+	private AnimationCallback applyScrollBarHeight = new AnimationCallback() {
+		@Override
+		public void execute(double timestamp) {
+			if (!wrappingEnabled) {
+				return;
+			}
+
+			double[] heights = measureRowHeights();
+			double startY = setHeaderHeight(heights);
+			adjustScrollBarHeight(startY);
+		}
+	};
+	
 	/**
 	 * Find maximum cell height per header row. A header row is at least as high
 	 * as defined by {@link #DEFAULT_HEIGHT}.
@@ -196,20 +221,12 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 	 * @param startY
 	 * @return
 	 */
-	private double setBodyStartY(double startY) {
+	private void setBodyStartY(double startY) {
 
+		
 		// Adjust body position
 		Element body = getGridPart("tbody");
 		body.getStyle().setMarginTop(startY, Unit.PX);
-
-		// Adjust scrollbar position
-		for (Element e : getGridParts("div")) {
-			if (e.getClassName().contains("v-grid-scroller-vertical")) {
-				e.getStyle().setTop(startY, Unit.PX);
-				e.getStyle().setHeight(grid.getOffsetHeight() - startY, Unit.PX);
-				break;
-			}
-		}
 
 		// Adjust deco position
 		for (Element e : getGridParts("div")) {
@@ -218,10 +235,31 @@ public class WrappingGridConnector extends AbstractExtensionConnector {
 				break;
 			}
 		}
+		
+		// Adjust scrollbar position
+		for (Element e : getGridParts("div")) {
+			if (e.getClassName().contains("v-grid-scroller-vertical")) {
+				e.getStyle().setTop(startY, Unit.PX);
+				break;
+			}
+		}
 
-		return startY;
 	}
 
+	private void adjustScrollBarHeight(double startY) {
+		// Adjust scrollbar position
+		double scrollHeight = 0;
+
+		for (Element e : getGridParts("div")) {
+			if (e.getClassName().contains("v-grid-scroller-vertical")) {
+				double gridh = getGridPart("table").getParentElement().getOffsetHeight();
+				scrollHeight = gridh - startY;
+				e.getStyle().setHeight(scrollHeight, Unit.PX);
+				break;
+			}
+		}
+	}
+	
 	// Get elements in Grid by tag name relative to parent element
 	private Element[] getGridParts(String elem, Element parent) {
 		NodeList<Element> elems = parent.getElementsByTagName(elem);
