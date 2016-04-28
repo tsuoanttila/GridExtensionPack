@@ -40,6 +40,11 @@ permanently ignored in your project. Do not worry, the project still works fine.
 
 ## Release notes
 
+### Version 1.0.2
+- New version of header wrapping extension
+- Header wrapping can now be used with alternative header row heights with other
+  themes than Valo
+
 ### Version 1.0.1
 - New version of header wrapping extension
 - Header wrapping is now compatible with resizable columns
