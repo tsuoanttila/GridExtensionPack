@@ -161,6 +161,7 @@ public class PagedContainer extends AbstractContainer implements Container,
             // Fix page if we're on a non-existent page.
             while (startIndex >= container.size() && page > 0) {
                 --page;
+                startIndex -= pageLength;
             }
 
             int currentPageCount = calculatePageCount();
