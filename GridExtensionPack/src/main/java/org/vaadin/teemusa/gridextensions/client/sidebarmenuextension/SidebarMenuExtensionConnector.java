@@ -32,7 +32,7 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
 	Map<Integer, String> styleMap = new HashMap<Integer, String>();
 	Grid<JsonObject> grid;
 
-	private Grid<JsonObject> getGrid() {
+	protected Grid<JsonObject> getGrid() {
 		return ((GridConnector) getParent()).getWidget();
 	}
 
@@ -42,7 +42,7 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
 	}
 
 	@OnStateChange("captionMap")
-	private void captionMapChanged() {
+	protected void captionMapChanged() {
 		MenuBar sidebarMenu = grid.getSidebarMenu();
 		for (Entry<Integer, MenuItem> entry : new HashSet<Entry<Integer, MenuItem>>(menuItemMap.entrySet())) {
 			sidebarMenu.removeItem(entry.getValue());
@@ -68,7 +68,7 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
 	}
 
 	@OnStateChange("styleMap")
-	private void styleMapChanged() {
+	protected void styleMapChanged() {
 		for (Entry<Integer, String> entry : new HashSet<Entry<Integer, String>>(styleMap.entrySet())) {
 			if (menuItemMap.containsKey(entry.getKey())) {
 				menuItemMap.get(entry.getKey()).removeStyleName(entry.getValue());
@@ -88,7 +88,7 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
 		}
 	}
 
-	private MenuItem createMenuItem(final int id, String caption) {
+	protected MenuItem createMenuItem(final int id, String caption) {
 		return new MenuItem(caption, new ScheduledCommand() {
 
 			@Override
