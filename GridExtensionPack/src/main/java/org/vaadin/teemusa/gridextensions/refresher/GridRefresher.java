@@ -5,7 +5,7 @@ import com.vaadin.ui.Grid.AbstractGridExtension;
 
 public class GridRefresher extends AbstractGridExtension {
 
-	private GridRefresher(Grid grid) {
+	protected GridRefresher(Grid grid) {
 		super(grid);
 	}
 

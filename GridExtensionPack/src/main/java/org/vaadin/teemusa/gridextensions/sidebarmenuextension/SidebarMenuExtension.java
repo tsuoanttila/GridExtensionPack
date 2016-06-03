@@ -21,7 +21,7 @@ public class SidebarMenuExtension extends AbstractGridExtension {
     public Map<Command, Integer> commandToIdMap = new HashMap<Command, Integer>();
     Integer nextId = 0;
 
-    private SidebarMenuExtension(Grid grid) {
+    protected SidebarMenuExtension(Grid grid) {
         super(grid);
         registerRpc(new SidebarMenuExtensionServerRpc() {
 
