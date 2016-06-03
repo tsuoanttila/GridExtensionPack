@@ -40,13 +40,13 @@ permanently ignored in your project. Do not worry, the project still works fine.
 
 ## Release notes
 
-### Version 1.0.2
+### Version 1.1.0
+- CacheStrategyExtension has been added
+- Many previously private methods are now protected
+- A bug with filtering in PagedContainer has been fixed
 - New version of header wrapping extension
 - Header wrapping can now be used with alternative header row heights with other
   themes than Valo
-
-### Version 1.0.1
-- New version of header wrapping extension
 - Header wrapping is now compatible with resizable columns
 
 ### Version 1.0.0
@@ -168,6 +168,12 @@ header row and it auto adjusts the header row height accordingly.
 
 A simple helper extension that gives you an API that you can use to
 force the repaint of a row.
+
+### CacheStrategyExtension
+
+This extensions provides an easy way to configure a custom cache strategy
+for Grid client-side. It uses an int value and a double value with a simple
+equation to count the limits. See class JavaDoc for example values
 
 ## API
 
