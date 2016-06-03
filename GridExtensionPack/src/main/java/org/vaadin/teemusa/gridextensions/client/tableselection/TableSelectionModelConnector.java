@@ -38,7 +38,7 @@ public class TableSelectionModelConnector extends MultiSelectionModelConnector {
 	}
 
 	@OnStateChange("selectionMode")
-	protected void setSelectionMode() {
+	void setSelectionMode() {
 		if (clickHandler != null) {
 			clickHandler.removeHandler();
 			clickHandler = null;

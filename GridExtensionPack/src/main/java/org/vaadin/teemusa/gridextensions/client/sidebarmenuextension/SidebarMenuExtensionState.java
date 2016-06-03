@@ -15,5 +15,6 @@ public class SidebarMenuExtensionState extends SharedState {
 
     public Map<Integer, String> captionMap = new HashMap<Integer, String>();
     public Map<Integer, String> styleMap = new HashMap<Integer, String>();
+	public boolean autoClose;
 
 }

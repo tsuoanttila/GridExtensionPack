@@ -31,6 +31,7 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
 	Map<Integer, MenuItem> menuItemMap = new HashMap<Integer, MenuItem>();
 	Map<Integer, String> styleMap = new HashMap<Integer, String>();
 	Grid<JsonObject> grid;
+	boolean autoClose;
 
 	protected Grid<JsonObject> getGrid() {
 		return ((GridConnector) getParent()).getWidget();
@@ -39,10 +40,22 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
 	@Override
 	protected void extend(ServerConnector target) {
 		grid = getGrid();
+		registerRpc(SidebarMenuExtensionClientRpc.class, new SidebarMenuExtensionClientRpc() {
+
+			@Override
+			public void openSidebarMenu() {
+				getGrid().setSidebarOpen(true);
+			}
+
+			@Override
+			public void closeSidebarMenu() {
+				getGrid().setSidebarOpen(false);
+			}
+		});
 	}
 
 	@OnStateChange("captionMap")
-	protected void captionMapChanged() {
+	void captionMapChanged() {
 		MenuBar sidebarMenu = grid.getSidebarMenu();
 		for (Entry<Integer, MenuItem> entry : new HashSet<Entry<Integer, MenuItem>>(menuItemMap.entrySet())) {
 			sidebarMenu.removeItem(entry.getValue());
@@ -68,7 +81,7 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
 	}
 
 	@OnStateChange("styleMap")
-	protected void styleMapChanged() {
+	void styleMapChanged() {
 		for (Entry<Integer, String> entry : new HashSet<Entry<Integer, String>>(styleMap.entrySet())) {
 			if (menuItemMap.containsKey(entry.getKey())) {
 				menuItemMap.get(entry.getKey()).removeStyleName(entry.getValue());
@@ -94,8 +107,17 @@ public class SidebarMenuExtensionConnector extends AbstractExtensionConnector {
 			@Override
 			public void execute() {
 				getRpcProxy(SidebarMenuExtensionServerRpc.class).click(id);
+				if (autoClose) {
+					// Close the sidebar menu when item is clicked.
+					getGrid().setSidebarOpen(false);
+				}
 			}
 		});
+	}
+
+	@OnStateChange("autoClose")
+	void updateAutoClose() {
+		autoClose = getState().autoClose;
 	}
 
 	@Override
