@@ -13,9 +13,10 @@ import com.vaadin.ui.Grid.AbstractGridExtension;
  */
 public class CacheStrategyExtension extends AbstractGridExtension {
 
-	protected CacheStrategyExtension(int minSize, double pageMultiplier) {
+	protected CacheStrategyExtension(Grid grid, int minSize, double pageMultiplier) {
 		getState().minSize = minSize;
 		getState().pageMultiplier = pageMultiplier;
+		extend(grid);
 	}
 
 	@Override
@@ -40,6 +41,6 @@ public class CacheStrategyExtension extends AbstractGridExtension {
 	 * @return extension
 	 */
 	public static CacheStrategyExtension extend(Grid grid, int minSize, double pageMultiplier) {
-		return new CacheStrategyExtension(minSize, pageMultiplier);
+		return new CacheStrategyExtension(grid, minSize, pageMultiplier);
 	}
 }

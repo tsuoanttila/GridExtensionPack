@@ -34,8 +34,12 @@ public class CacheStrategyExtensionConnector extends AbstractGridExtensionConnec
 
 			@Override
 			public void onDataAvailable(DataAvailableEvent event) {
-				setCacheStrategy();
-				registration.removeHandler();
+				// Make sure we won't get another event for this.
+				if (registration != null) {
+					registration.removeHandler();
+					registration = null;
+					setCacheStrategy();
+				}
 			}
 		});
 	}
@@ -62,16 +66,16 @@ public class CacheStrategyExtensionConnector extends AbstractGridExtensionConnec
 			}
 		});
 	}
-	
+
 	@OnStateChange("minSize")
 	void updateMinSize() {
 		minSize = getState().minSize;
 	}
-	
+
 	@OnStateChange("minSize")
 	void updatePageMultiplier() {
 		pageMultiplier = getState().pageMultiplier;
-	}	
+	}
 
 	@Override
 	public CacheStrategyState getState() {

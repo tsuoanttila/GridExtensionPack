@@ -2,6 +2,7 @@ package org.vaadin.teemusa.gridextensions.demo;
 
 import java.util.Random;
 
+import org.vaadin.teemusa.gridextensions.cachestrategy.CacheStrategyExtension;
 import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState.TableSelectionMode;
 import org.vaadin.teemusa.gridextensions.tableselection.TableSelectionModel;
 import org.vaadin.teemusa.gridextensions.wrappinggrid.WrappingGrid;
@@ -34,7 +35,7 @@ public class HeaderWrapExtensionLayout extends VerticalLayout {
 
 		Grid.HeaderRow headerRow1 = grid.appendHeaderRow();
 		headerRow1.join(grid.getColumns().get(2).getPropertyId(), grid.getColumns().get(3).getPropertyId());
-		
+
 		grid.setWidth("100%");
 		grid.setHeight("100%");
 
@@ -59,9 +60,10 @@ public class HeaderWrapExtensionLayout extends VerticalLayout {
 			}
 		});
 
-
 		addComponent(button);
 		addComponent(grid);
+
+		CacheStrategyExtension.extend(grid, 5, 0.2d);
 
 	}
 
