@@ -5,7 +5,6 @@ import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.events.BodyClickHandler;
 import com.vaadin.client.widget.grid.events.GridClickEvent;
 import com.vaadin.client.widget.grid.selection.SelectionModel;
-import com.vaadin.client.widget.grid.selection.SelectionModel.Multi;
 import com.vaadin.client.widgets.Grid;
 
 import elemental.json.JsonObject;
@@ -20,19 +19,14 @@ public class CtrlClickSelectionHandler implements BodyClickHandler {
 
 	@Override
 	public void onClick(GridClickEvent event) {
-		SelectionModel<JsonObject> selectionModel = grid.getSelectionModel();
-		if (!(selectionModel instanceof Multi)) {
-			// Not multiselecting.
-			return;
-		}
-
-		Multi<JsonObject> model = (Multi<JsonObject>) selectionModel;
+		SelectionModel<JsonObject> model = grid.getSelectionModel();
 		CellReference<JsonObject> cell = grid.getEventCell();
 
 		ctrlClickSelect(model, cell, event);
 	}
 
-	protected void ctrlClickSelect(Multi<JsonObject> model, CellReference<JsonObject> cell, GridClickEvent event) {
+	protected void ctrlClickSelect(SelectionModel<JsonObject> model, CellReference<JsonObject> cell,
+			GridClickEvent event) {
 		NativeEvent e = event.getNativeEvent();
 		JsonObject row = cell.getRow();
 		if (!e.getCtrlKey() && !e.getMetaKey()) {

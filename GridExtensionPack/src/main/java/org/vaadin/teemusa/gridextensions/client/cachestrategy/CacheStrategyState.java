@@ -1,8 +1,8 @@
 package org.vaadin.teemusa.gridextensions.client.cachestrategy;
 
-import com.vaadin.shared.communication.SharedState;
+import com.vaadin.shared.ui.grid.AbstractGridExtensionState;
 
-public class CacheStrategyState extends SharedState {
+public class CacheStrategyState extends AbstractGridExtensionState {
 
 	/**
 	 * Max cache size = minSize + pageSize * pageMultiplier

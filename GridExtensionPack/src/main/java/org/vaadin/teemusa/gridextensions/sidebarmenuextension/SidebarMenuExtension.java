@@ -10,6 +10,8 @@ import org.vaadin.teemusa.gridextensions.client.sidebarmenuextension.SidebarMenu
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.AbstractGridExtension;
 
+import elemental.json.JsonObject;
+
 /**
  * Server-side class for SidebarMenuExtension.
  *
@@ -23,8 +25,7 @@ public class SidebarMenuExtension extends AbstractGridExtension {
 	Integer nextId = 0;
 	private SidebarMenuExtensionClientRpc rpcProxy;
 
-	protected SidebarMenuExtension(Grid grid) {
-		super(grid);
+	protected SidebarMenuExtension(Grid<?> grid) {
 		registerRpc(new SidebarMenuExtensionServerRpc() {
 
 			@Override
@@ -36,6 +37,8 @@ public class SidebarMenuExtension extends AbstractGridExtension {
 			}
 		});
 		rpcProxy = getRpcProxy(SidebarMenuExtensionClientRpc.class);
+		extend(grid);
+
 	}
 
 	public void addCommand(Command command, String caption) {
@@ -131,7 +134,11 @@ public class SidebarMenuExtension extends AbstractGridExtension {
 	 *            parent grid for extension
 	 * @return constructed extension
 	 */
-	public static SidebarMenuExtension extend(Grid grid) {
+	public static SidebarMenuExtension create(Grid<?> grid) {
 		return new SidebarMenuExtension(grid);
+	}
+
+	@Override
+	public void generateData(Object item, JsonObject jsonObject) {
 	}
 }

@@ -6,10 +6,10 @@ import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.DataAvailableEvent;
 import com.vaadin.client.widget.grid.DataAvailableHandler;
 import com.vaadin.client.widget.grid.events.GridClickEvent;
-import com.vaadin.client.widget.grid.selection.SelectionModel.Multi;
-import com.vaadin.client.widget.grid.selection.SelectionModel.Multi.Batched;
+import com.vaadin.client.widget.grid.selection.SelectionModel;
 import com.vaadin.client.widgets.Grid;
-import com.vaadin.shared.ui.grid.Range;
+import com.vaadin.data.SelectionModel.Multi;
+import com.vaadin.shared.Range;
 
 import elemental.json.JsonObject;
 
@@ -17,10 +17,10 @@ public class ShiftCtrlClickSelectionHandler extends CtrlClickSelectionHandler {
 
 	private final class ShiftSelector implements DataAvailableHandler {
 		private final CellReference<JsonObject> cell;
-		private final Multi<JsonObject> model;
+		private final SelectionModel<JsonObject> model;
 		private boolean ctrlOrMeta;
 
-		private ShiftSelector(CellReference<JsonObject> cell, Multi<JsonObject> model, boolean ctrlOrMeta) {
+		private ShiftSelector(CellReference<JsonObject> cell, SelectionModel<JsonObject> model, boolean ctrlOrMeta) {
 			this.cell = cell;
 			this.model = model;
 			this.ctrlOrMeta = ctrlOrMeta;
@@ -35,11 +35,7 @@ public class ShiftCtrlClickSelectionHandler extends CtrlClickSelectionHandler {
 			int min = Math.min(current, previous);
 			int max = Math.max(current, previous);
 
-			Batched<JsonObject> batched = null;
-			if (model instanceof Batched) {
-				batched = (Batched<JsonObject>) model;
-				batched.startBatchSelect();
-			}
+			// TODO: Fix batching.
 
 			if (!ctrlOrMeta) {
 				model.deselectAll();
@@ -54,9 +50,7 @@ public class ShiftCtrlClickSelectionHandler extends CtrlClickSelectionHandler {
 				model.select(grid.getDataSource().getRow(i));
 			}
 
-			if (batched != null) {
-				batched.commitBatchSelect();
-			}
+			// TODO: Batch end
 
 			rpc.selectRange(partition[0].getStart(), partition[0].length());
 			rpc.selectRange(partition[2].getStart(), partition[2].length());
@@ -79,7 +73,7 @@ public class ShiftCtrlClickSelectionHandler extends CtrlClickSelectionHandler {
 	}
 
 	@Override
-	protected void ctrlClickSelect(Multi<JsonObject> model, CellReference<JsonObject> cell, GridClickEvent e) {
+	protected void ctrlClickSelect(SelectionModel<JsonObject> model, CellReference<JsonObject> cell, GridClickEvent e) {
 		// Plain control click, or no previously selected.
 		if (!e.isShiftKeyDown() || previous < 0) {
 			super.ctrlClickSelect(model, cell, e);

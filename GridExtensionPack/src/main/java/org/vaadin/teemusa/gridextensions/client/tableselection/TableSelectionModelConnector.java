@@ -5,11 +5,11 @@ import org.vaadin.teemusa.gridextensions.tableselection.TableSelectionModel;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.annotations.OnStateChange;
-import com.vaadin.client.connectors.MultiSelectionModelConnector;
-import com.vaadin.client.renderers.ComplexRenderer;
+import com.vaadin.client.connectors.grid.MultiSelectionModelConnector;
+import com.vaadin.client.renderers.Renderer;
 import com.vaadin.client.widget.grid.events.BodyClickHandler;
-import com.vaadin.client.widget.grid.selection.SelectionModel.Multi;
 import com.vaadin.client.widgets.Grid;
+import com.vaadin.shared.Range;
 import com.vaadin.shared.ui.Connect;
 
 import elemental.json.JsonObject;
@@ -17,17 +17,22 @@ import elemental.json.JsonObject;
 @Connect(TableSelectionModel.class)
 public class TableSelectionModelConnector extends MultiSelectionModelConnector {
 
+	protected class CustomSelectionModel extends MultiSelectionModel {
+
+		@Override
+		public Renderer<Boolean> getRenderer() {
+			return null;
+		}
+
+	}
+
 	private HandlerRegistration clickHandler;
 
 	@Override
-	protected Multi<JsonObject> createSelectionModel() {
-		return new MultiSelectionModel() {
+	protected void initSelectionModel() {
+		super.initSelectionModel();
 
-			@Override
-			protected ComplexRenderer<Boolean> createSelectionColumnRenderer(Grid<JsonObject> grid) {
-				return null;
-			}
-		};
+		getGrid().setSelectionModel(new CustomSelectionModel());
 	}
 
 	@Override

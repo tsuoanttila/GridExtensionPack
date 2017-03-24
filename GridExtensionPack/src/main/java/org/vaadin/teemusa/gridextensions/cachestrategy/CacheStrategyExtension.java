@@ -5,6 +5,8 @@ import org.vaadin.teemusa.gridextensions.client.cachestrategy.CacheStrategyState
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.AbstractGridExtension;
 
+import elemental.json.JsonObject;
+
 /**
  * Simple parameterized CacheStrategyExtension for changing the way Grid does
  * caching in the client-side.
@@ -42,5 +44,9 @@ public class CacheStrategyExtension extends AbstractGridExtension {
 	 */
 	public static CacheStrategyExtension extend(Grid grid, int minSize, double pageMultiplier) {
 		return new CacheStrategyExtension(grid, minSize, pageMultiplier);
+	}
+
+	@Override
+	public void generateData(Object item, JsonObject jsonObject) {
 	}
 }

@@ -2,12 +2,11 @@ package org.vaadin.teemusa.gridextensions.demo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.vaadin.teemusa.gridextensions.sidebarmenuextension.SidebarMenuExtension;
 import org.vaadin.teemusa.gridextensions.sidebarmenuextension.SidebarMenuExtension.Command;
 
-import com.vaadin.data.Container.Indexed;
-import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Grid;
@@ -134,30 +133,40 @@ public class SidebarMenuExtensionLayout extends VerticalLayout {
 		setExpandRatio(labelLayout, 2);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void addGrid() {
-		final Grid grid = new Grid("Attachment grid");
-		grid.addColumn("filename");
-		grid.addColumn("open");
-		grid.addColumn("download");
-		grid.getColumn("download").setRenderer(new HtmlRenderer());
-		Indexed dataSource = grid.getContainerDataSource();
-		for (int i = 1; i <= 10; ++i) {
-			Object itemId = dataSource.addItem();
-			Item item = dataSource.getItem(itemId);
-			item.getItemProperty("filename").setValue("filename " + i + ".txt");
-			item.getItemProperty("open").setValue("false");
-			item.getItemProperty("download").setValue(createOpenLink());
-		}
-		grid.getColumn("open").setHidable(true);
-		grid.getColumn("download").setHidable(true);
+		final Grid<TestFile> grid = new Grid<>("Attachment grid");
+		grid.addColumn(TestFile::getFileName).setCaption("File Name");
+		grid.addColumn(TestFile::isOpen).setHidable(true).setCaption("Is Open");
+		grid.addColumn(TestFile::createOpenLink, new HtmlRenderer()).setHidable(true).setCaption("Download");
 		grid.setColumnReorderingAllowed(true);
-		grid.setColumnOrder("filename", "open", "download");
 		addComponent(grid);
-		extension = SidebarMenuExtension.extend(grid);
+		extension = SidebarMenuExtension.create(grid);
+
+		grid.setItems(Stream.of("Test file 1", "Test file 2").map(TestFile::new));
 	}
 
-	private Object createOpenLink() {
-		return "<span class=\"v-button-link grid-open\">fake link</span>";
+	public static class TestFile {
+		private final String fileName;
+		private boolean open = false;
+
+		public TestFile(String fileName) {
+			this.fileName = fileName;
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		public boolean isOpen() {
+			return open;
+		}
+
+		public void setOpen(boolean open) {
+			this.open = open;
+		}
+
+		public String createOpenLink() {
+			return "<span class=\"v-button-link grid-open\">fake link</span>";
+		}
 	}
 }
