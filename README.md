@@ -40,6 +40,12 @@ permanently ignored in your project. Do not worry, the project still works fine.
 
 ## Release notes
 
+### Version 2.0.0
+- Vaadin 8 support
+- Most old features ported for the Vaadin 8 version
+- Requires the use of SelectGrid instead of Grid to allow TableSelectionModel
+- Removed features available in the Framework itself
+
 ### Version 1.1.0
 - CacheStrategyExtension has been added
 - Many previously private methods are now protected
