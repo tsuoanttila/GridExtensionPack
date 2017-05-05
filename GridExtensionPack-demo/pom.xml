@@ -86,6 +86,11 @@
 			<artifactId>vaadin-themes</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-compatibility-client</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
@@ -149,6 +154,7 @@
 					<execution>
 						<configuration>
 							<style>DETAILED</style>
+							<extraJvmArgs>-Xmx1G</extraJvmArgs>
 						</configuration>
 						<goals>
 							<goal>resources</goal>

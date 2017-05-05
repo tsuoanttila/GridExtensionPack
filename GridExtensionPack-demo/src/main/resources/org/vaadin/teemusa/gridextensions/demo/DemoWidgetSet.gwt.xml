@@ -26,4 +26,6 @@
     
 
 
+
+    <inherits name="com.vaadin.v7.Vaadin7WidgetSet" />
 </module>

@@ -2,6 +2,10 @@ package org.vaadin.teemusa.gridextensions.demo;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.vaadin.teemusa.gridextensions.demo.v7compat.DemoContentLayoutV7;
+import org.vaadin.teemusa.gridextensions.demo.v7compat.HeaderWrapExtensionLayoutV7;
+import org.vaadin.teemusa.gridextensions.demo.v7compat.SidebarMenuExtensionLayoutV7;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -26,6 +30,12 @@ public class DemoUI extends UI {
         tabSheet.addTab(new DemoContentLayout(), "main demo");
         tabSheet.addTab(new SidebarMenuExtensionLayout(), "sidebar extension demo");
         tabSheet.addTab(new HeaderWrapExtensionLayout(), "header wrap demo");
+        
+
+        tabSheet.addTab(new DemoContentLayoutV7(), "main demo v7");
+        tabSheet.addTab(new SidebarMenuExtensionLayoutV7(), "sidebar extension demo v7");
+        tabSheet.addTab(new HeaderWrapExtensionLayoutV7(), "header wrap demo v7");
+        
         tabSheet.setSizeFull();
         setContent(tabSheet);
     }

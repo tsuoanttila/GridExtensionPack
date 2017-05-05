@@ -60,6 +60,7 @@ public class PagingControls<T> {
 	 * Sets the current page number.
 	 * 
 	 * @param newPageNumber
+	 *            the new page number
 	 */
 	public void setPageNumber(int newPageNumber) {
 		if (newPageNumber >= 0 && newPageNumber < getPageCount()) {
