@@ -46,6 +46,10 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+#IntelliJ
+.idea
+*.iml
+
 # Java annotation processor (APT)
 .factorypath
 
