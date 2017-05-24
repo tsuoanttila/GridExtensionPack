@@ -1,10 +1,7 @@
 package org.vaadin.teemusa.gridextensions.paging;
 
-import java.util.Objects;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.SerializablePredicate;
 import org.junit.Before;
 import org.junit.Test;

@@ -36,7 +36,7 @@ public class PagingControls<T> {
 	/**
 	 * Sets the page length. Because the page length might cause some
 	 * misalignment in paging, the page number is set to 0 when setting page
-	 * length. The {@link setPageNumber} can be used to restore position
+	 * length. The {@link PagingControls#setPageNumber} can be used to restore position
 	 * according to application preferences.
 	 * 
 	 * @param newPageLength
@@ -60,6 +60,7 @@ public class PagingControls<T> {
 	 * Sets the current page number.
 	 * 
 	 * @param newPageNumber
+     *             the desired page
 	 */
 	public void setPageNumber(int newPageNumber) {
 		if (newPageNumber >= 0 && newPageNumber < getPageCount()) {
@@ -101,7 +102,7 @@ public class PagingControls<T> {
 	}
 
 	void updatePageNumber() {
-		while (pageNumber * pageLength >= pagedDataProvider.getBackendSize()) {
+		while (pageNumber > 0 && pageNumber * pageLength >= pagedDataProvider.getBackendSize()) {
 			--pageNumber;
 		}
 	}
