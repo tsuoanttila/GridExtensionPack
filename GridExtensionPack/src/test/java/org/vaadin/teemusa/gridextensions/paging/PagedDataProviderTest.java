@@ -86,7 +86,7 @@ public class PagedDataProviderTest {
 	}
 
 	@Test
-	public void testPageNumberGoingBelow0Issue() {
+	public void testPageNumberGoingBelow0Issue19() {
 		PagingControls controls = pagedDP.getPagingControls();
 		Assert.assertEquals(0, controls.getPageNumber());
 		filteredDP.setFilter(x -> false);
