@@ -122,17 +122,13 @@ public class PagingControls implements Serializable {
 		BigInteger offset = pageNumber
 				.multiply(pageLength)
 				.add(queryOffset)
-				.max(BigInteger.ZERO);
+				.max(BigInteger.ZERO)
+				.min(maxInteger);
 
-		BigInteger limit = pageLength
+		BigInteger limit = pageLength.subtract(queryOffset)
 				.min(queryLimit)
-				.max(BigInteger.ZERO);
-
-		offset = offset.min(maxInteger)
-		 		.max(BigInteger.ZERO);
-		limit = limit.subtract(queryOffset)
-				.min(maxInteger)
-		 		.max(BigInteger.ZERO);
+				.max(BigInteger.ZERO)
+				.min(maxInteger);
 
 		return new Query<>(
 				offset.intValue(),

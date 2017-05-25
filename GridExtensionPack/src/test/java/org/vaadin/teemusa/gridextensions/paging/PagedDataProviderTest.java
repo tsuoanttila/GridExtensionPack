@@ -144,7 +144,7 @@ public class PagedDataProviderTest {
 
 		Query<String, SerializablePredicate<String>> explicitLimitQuery = new Query<>(
 				1,
-				PagedDataProvider.DEFAULT_PAGE_LENGTH - 1,
+				PagedDataProvider.DEFAULT_PAGE_LENGTH - 2,
 				implicitLimitQuery.getSortOrders(),
 				implicitLimitQuery.getInMemorySorting(),
 				implicitLimitQuery.getFilter().orElse(null));
