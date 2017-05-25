@@ -9,16 +9,18 @@ import com.vaadin.data.provider.Query;
 
 public class PagedDataProvider<T, F> extends AbstractDataProvider<T, F> {
 
-	private final PagingControls<T> pagingControls;
+	static final int DEFAULT_PAGE_LENGTH = 10;
+
+	private final PagingControls pagingControls;
 	final DataProvider<T, F> dataProvider;
 	Integer backendSize;
 
 	public PagedDataProvider(DataProvider<T, F> dataProvider) {
-		this(dataProvider, 10);
+		this(dataProvider, DEFAULT_PAGE_LENGTH);
 	}
 
 	public PagedDataProvider(DataProvider<T, F> dataProvider, int pageLength) {
-		pagingControls = new PagingControls<T>(this, pageLength);
+		pagingControls = new PagingControls(this, pageLength);
 		this.dataProvider = dataProvider;
 		this.dataProvider.addDataProviderListener(event -> {
 			if (event instanceof DataRefreshEvent) {
@@ -37,10 +39,11 @@ public class PagedDataProvider<T, F> extends AbstractDataProvider<T, F> {
 
 	@Override
 	public int size(Query<T, F> query) {
-		return getPagingControls().getSizeOfPage(query);
+		Query<T, F> newQuery = getPagingControls().alignQuery(query);
+		return dataProvider.size(newQuery);
 	}
 
-	public PagingControls<T> getPagingControls() {
+	public PagingControls getPagingControls() {
 		return pagingControls;
 	}
 

@@ -2,13 +2,16 @@ package org.vaadin.teemusa.gridextensions.paging;
 
 import com.vaadin.data.provider.Query;
 
-public class PagingControls<T> {
+import java.io.Serializable;
+import java.math.BigInteger;
 
-	private PagedDataProvider<T, ?> pagedDataProvider;
+public class PagingControls implements Serializable {
+
+	private final PagedDataProvider<?, ?> pagedDataProvider;
 	private int pageLength;
 	private int pageNumber = 0;
 
-	PagingControls(PagedDataProvider<T, ?> pagedDataProvider, int pageLength) {
+	PagingControls(PagedDataProvider<?, ?> pagedDataProvider, int pageLength) {
 		this.pagedDataProvider = pagedDataProvider;
 		setPageLength(pageLength);
 	}
@@ -107,16 +110,35 @@ public class PagingControls<T> {
 		}
 	}
 
-	<F> Query<T, F> alignQuery(Query<T, F> query) {
-		return new Query<>(pageNumber * pageLength + query.getOffset(), query.getLimit(), query.getSortOrders(),
-				query.getInMemorySorting(), query.getFilter().orElse(null));
-	}
+	<T, F> Query<T, F> alignQuery(Query<T, F> query) {
+		BigInteger pageNumber = BigInteger.valueOf(this.pageNumber);
+		BigInteger pageLength = BigInteger.valueOf(this.pageLength);
+		BigInteger queryOffset = BigInteger.valueOf(query.getOffset());
+		BigInteger queryLimit = BigInteger.valueOf(query.getLimit());
 
-	int getSizeOfPage(Query<T, ?> query) {
-		int limit = pageLength;
-		if (pageNumber == getPageCount() - 1) {
-			limit = pagedDataProvider.getBackendSize() - pageLength * pageNumber;
-		}
-		return limit;
+		BigInteger maxInteger = BigInteger
+				.valueOf(Integer.MAX_VALUE);
+
+		BigInteger offset = pageNumber
+				.multiply(pageLength)
+				.add(queryOffset)
+				.max(BigInteger.ZERO);
+
+		BigInteger limit = pageLength
+				.min(queryLimit)
+				.max(BigInteger.ZERO);
+
+		offset = offset.min(maxInteger)
+		 		.max(BigInteger.ZERO);
+		limit = limit.subtract(queryOffset)
+				.min(maxInteger)
+		 		.max(BigInteger.ZERO);
+
+		return new Query<>(
+				offset.intValue(),
+				limit.intValue(),
+				query.getSortOrders(),
+				query.getInMemorySorting(),
+				query.getFilter().orElse(null));
 	}
 }
