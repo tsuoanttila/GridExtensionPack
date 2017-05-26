@@ -39,8 +39,7 @@ public class PagedDataProvider<T, F> extends AbstractDataProvider<T, F> {
 
 	@Override
 	public int size(Query<T, F> query) {
-		Query<T, F> newQuery = getPagingControls().alignQuery(query);
-		return dataProvider.size(newQuery);
+		return getPagingControls().getSizeOfPage(dataProvider, query);
 	}
 
 	public PagingControls getPagingControls() {

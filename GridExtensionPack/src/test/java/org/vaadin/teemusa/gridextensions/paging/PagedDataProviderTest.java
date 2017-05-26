@@ -92,19 +92,19 @@ public class PagedDataProviderTest {
 	}
 
 	@Test
-	public void testPageNumberGoingBelow0Issue19() {
+	public void testPageNumberGoingBelow0WhenBackendIsEmpty() {
 		Assert.assertEquals(0, controls.getPageNumber());
 		dp.setFilter(x -> false);
 		Assert.assertEquals(0, dp.size(new Query<>()));
+		Assert.assertEquals(0, dp.fetch(new Query<>()).count());
 		Assert.assertEquals(0, controls.getPageCount());
 		Assert.assertEquals(0, controls.getPageNumber());
 	}
 
 	@Test
-	public void testSizeUsesOffsetProvidedByQuery() {
+	public void testOffsetProvidedByQuery() {
 		Query<String, SerializablePredicate<String>> zeroOffsetQuery = new Query<>();
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH, pagedDP.size(zeroOffsetQuery));
-
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(zeroOffsetQuery));
 
 		Query<String, SerializablePredicate<String>> singleOffsetQuery = new Query<>(
 				1,
@@ -112,56 +112,97 @@ public class PagedDataProviderTest {
 				zeroOffsetQuery.getSortOrders(),
 				zeroOffsetQuery.getInMemorySorting(),
 				zeroOffsetQuery.getFilter().orElse(null));
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH - 1, pagedDP.size(singleOffsetQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(singleOffsetQuery));
+		Assert.assertEquals(controls.getPageLength() - 1, pagedDP.fetch(singleOffsetQuery).count());
 
 		controls.nextPage();
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH - 1, pagedDP.size(singleOffsetQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(singleOffsetQuery));
+		Assert.assertEquals(controls.getPageLength() - 1, pagedDP.fetch(singleOffsetQuery).count());
 	}
 
 	@Test
-	public void testSizeUsesLimitProvidedByQuery() {
-		Query<String, SerializablePredicate<String>> implicitLimitQuery = new Query<>();
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH, pagedDP.size(implicitLimitQuery));
+	public void testOffsetProvidedByQueryIsOnePageLength() {
+		Query<String, SerializablePredicate<String>> zeroOffsetQuery = new Query<>();
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(zeroOffsetQuery));
 
+		Query<String, SerializablePredicate<String>> singlePageOffsetQuery = new Query<>(
+				controls.getPageLength(),
+				zeroOffsetQuery.getLimit(),
+				zeroOffsetQuery.getSortOrders(),
+				zeroOffsetQuery.getInMemorySorting(),
+				zeroOffsetQuery.getFilter().orElse(null));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(singlePageOffsetQuery));
+		Assert.assertEquals(0, pagedDP.fetch(singlePageOffsetQuery).count());
+	}
+
+	@Test
+	public void testOffsetProvidedByQueryIsTwoPageLengths() {
+		Query<String, SerializablePredicate<String>> zeroOffsetQuery = new Query<>();
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(zeroOffsetQuery));
+
+		Query<String, SerializablePredicate<String>> twoPageOffsetQuery = new Query<>(
+				controls.getPageLength() * 2,
+				zeroOffsetQuery.getLimit(),
+				zeroOffsetQuery.getSortOrders(),
+				zeroOffsetQuery.getInMemorySorting(),
+				zeroOffsetQuery.getFilter().orElse(null));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(twoPageOffsetQuery));
+		Assert.assertEquals(0, pagedDP.fetch(twoPageOffsetQuery).count());
+	}
+
+	@Test
+	public void testLimitProvidedByQuery() {
+		Query<String, SerializablePredicate<String>> implicitLimitQuery = new Query<>();
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(implicitLimitQuery));
 
 		Query<String, SerializablePredicate<String>> explicitLimitQuery = new Query<>(
 				implicitLimitQuery.getOffset(),
-				PagedDataProvider.DEFAULT_PAGE_LENGTH - 1,
+				controls.getPageLength() - 1,
 				implicitLimitQuery.getSortOrders(),
 				implicitLimitQuery.getInMemorySorting(),
 				implicitLimitQuery.getFilter().orElse(null));
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH - 1, pagedDP.size(explicitLimitQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(explicitLimitQuery));
+		Assert.assertEquals(controls.getPageLength() - 1, pagedDP.fetch(explicitLimitQuery).count());
 
 		controls.nextPage();
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH - 1, pagedDP.size(explicitLimitQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(explicitLimitQuery));
+		Assert.assertEquals(controls.getPageLength() - 1, pagedDP.fetch(explicitLimitQuery).count());
 	}
 
 	@Test
-	public void testSizeUsesOffsetAndLimitProvidedByQuery() {
+	public void testOffsetAndLimitProvidedByQuery() {
 		Query<String, SerializablePredicate<String>> implicitLimitQuery = new Query<>();
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH, pagedDP.size(implicitLimitQuery));
-
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(implicitLimitQuery));
 
 		Query<String, SerializablePredicate<String>> explicitLimitQuery = new Query<>(
 				1,
-				PagedDataProvider.DEFAULT_PAGE_LENGTH - 2,
+				controls.getPageLength() - 2,
 				implicitLimitQuery.getSortOrders(),
 				implicitLimitQuery.getInMemorySorting(),
 				implicitLimitQuery.getFilter().orElse(null));
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH - 2, pagedDP.size(explicitLimitQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(explicitLimitQuery));
+		Assert.assertEquals(controls.getPageLength()- 2, pagedDP.fetch(explicitLimitQuery).count());
 
 		controls.nextPage();
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH - 2, pagedDP.size(explicitLimitQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(explicitLimitQuery));
+		Assert.assertEquals(controls.getPageLength() - 2, pagedDP.fetch(explicitLimitQuery).count());
 	}
 
 	@Test
-	public void testSizeUsesFilterProvidedByQuery() {
+	public void testFilterProvidedByQuery() {
+		controls.setPageLength(15);
+
 		Query<String, SerializablePredicate<String>> noFilterQuery = new Query<>();
-		Assert.assertEquals(PagedDataProvider.DEFAULT_PAGE_LENGTH, pagedDP.size(noFilterQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(noFilterQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.fetch(noFilterQuery).count());
 
+		Query<String, SerializablePredicate<String>> filterQuery = new Query<>(x -> x.startsWith("Item 2"));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.size(filterQuery));
+		Assert.assertEquals(controls.getPageLength(), pagedDP.fetch(filterQuery).count());
 
-		Query<String, SerializablePredicate<String>> filterQuery = new Query<>(x -> false);
-		Assert.assertEquals(0, pagedDP.size(filterQuery));
+		filterQuery = new Query<>(x -> x.startsWith("Item 3"));
+		Assert.assertEquals(11, pagedDP.size(filterQuery));
+		Assert.assertEquals(11, pagedDP.fetch(filterQuery).count());
 	}
 
 	@Test

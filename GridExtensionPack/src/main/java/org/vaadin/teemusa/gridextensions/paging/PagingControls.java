@@ -1,5 +1,6 @@
 package org.vaadin.teemusa.gridextensions.paging;
 
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.Query;
 
 import java.io.Serializable;
@@ -77,11 +78,14 @@ public class PagingControls implements Serializable {
 	/**
 	 * Gets the current page count. If this method is called in init, it is
 	 * assumed that no filters are used.
-	 * 
+	 *
 	 * @return page count
 	 */
 	public int getPageCount() {
-		int backendSize = pagedDataProvider.getBackendSize();
+		return getPageCount(pagedDataProvider.getBackendSize());
+	}
+
+	int getPageCount(int backendSize) {
 		int lastPage = backendSize / pageLength;
 		return backendSize % pageLength == 0 ? lastPage : lastPage + 1;
 	}
@@ -136,5 +140,18 @@ public class PagingControls implements Serializable {
 				query.getSortOrders(),
 				query.getInMemorySorting(),
 				query.getFilter().orElse(null));
+	}
+
+	<T, F> int getSizeOfPage(DataProvider<T, F> dataProvider, Query<T, F> query) {
+		int limit = pageLength;
+		int backendSize = query.getFilter()
+				.map(filter -> dataProvider.size(new Query<>(filter)))
+				.orElseGet(pagedDataProvider::getBackendSize);
+
+		if (pageNumber >= getPageCount(backendSize) - 1) {
+			limit = backendSize - pageLength * pageNumber;
+		}
+
+		return limit;
 	}
 }
