@@ -51,7 +51,7 @@ public class DemoContentLayout extends VerticalLayout {
 		PagedDataProvider<TestObject, SerializablePredicate<TestObject>> dataProvider = new PagedDataProvider<>(
 				DataProvider.ofCollection(TestObject.generateTestData(995)));
 		grid.setDataProvider(dataProvider);
-		PagingControls<TestObject> pagingControls = dataProvider.getPagingControls();
+		PagingControls pagingControls = dataProvider.getPagingControls();
 
 		HorizontalLayout pages = new HorizontalLayout();
 		pages.setCaption("Paging controls");
