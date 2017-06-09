@@ -41,17 +41,17 @@ public class PagedDataProvider<T, F> extends AbstractDataProvider<T, F> {
 
 	@Override
 	public int size(Query<T, F> query) {
-		int backendSize;
+		int size;
 		
 		if (this.backendSize == null) {
-			backendSize = getBackendSize(query);
+			size = getBackendSize(query);
 		} else if (Objects.equals(filter, query.getFilter().orElse(null))){
-			backendSize = this.backendSize;
+			size = this.backendSize;
 		} else {
-			backendSize = dataProvider.size(query);
+			size = dataProvider.size(query);
 		}
 		
-		return getPagingControls().getSizeOfPage(backendSize);
+		return getPagingControls().getSizeOfPage(size);
 	}
 
 	public PagingControls getPagingControls() {
