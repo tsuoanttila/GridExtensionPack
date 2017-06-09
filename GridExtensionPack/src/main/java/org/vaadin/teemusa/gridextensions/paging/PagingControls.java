@@ -2,13 +2,16 @@ package org.vaadin.teemusa.gridextensions.paging;
 
 import com.vaadin.data.provider.Query;
 
-public class PagingControls<T> {
+import java.io.Serializable;
+import java.math.BigInteger;
 
-	private PagedDataProvider<T, ?> pagedDataProvider;
+public class PagingControls implements Serializable {
+
+	private final PagedDataProvider<?, ?> pagedDataProvider;
 	private int pageLength;
 	private int pageNumber = 0;
 
-	PagingControls(PagedDataProvider<T, ?> pagedDataProvider, int pageLength) {
+	PagingControls(PagedDataProvider<?, ?> pagedDataProvider, int pageLength) {
 		this.pagedDataProvider = pagedDataProvider;
 		setPageLength(pageLength);
 	}
@@ -36,7 +39,7 @@ public class PagingControls<T> {
 	/**
 	 * Sets the page length. Because the page length might cause some
 	 * misalignment in paging, the page number is set to 0 when setting page
-	 * length. The {@link setPageNumber} can be used to restore position
+	 * length. The {@link PagingControls#setPageNumber} can be used to restore position
 	 * according to application preferences.
 	 * 
 	 * @param newPageLength
@@ -60,6 +63,7 @@ public class PagingControls<T> {
 	 * Sets the current page number.
 	 * 
 	 * @param newPageNumber
+     *             the desired page
 	 */
 	public void setPageNumber(int newPageNumber) {
 		if (newPageNumber >= 0 && newPageNumber < getPageCount()) {
@@ -73,11 +77,14 @@ public class PagingControls<T> {
 	/**
 	 * Gets the current page count. If this method is called in init, it is
 	 * assumed that no filters are used.
-	 * 
+	 *
 	 * @return page count
 	 */
 	public int getPageCount() {
-		int backendSize = pagedDataProvider.getBackendSize();
+		return getPageCount(pagedDataProvider.getBackendSize());
+	}
+
+	int getPageCount(int backendSize) {
 		int lastPage = backendSize / pageLength;
 		return backendSize % pageLength == 0 ? lastPage : lastPage + 1;
 	}
@@ -101,21 +108,46 @@ public class PagingControls<T> {
 	}
 
 	void updatePageNumber() {
-		while (pageNumber * pageLength >= pagedDataProvider.getBackendSize()) {
+		while (pageNumber > 0 && pageNumber * pageLength >= pagedDataProvider.getBackendSize()) {
 			--pageNumber;
 		}
 	}
 
-	<F> Query<T, F> alignQuery(Query<T, F> query) {
-		return new Query<>(pageNumber * pageLength + query.getOffset(), query.getLimit(), query.getSortOrders(),
-				query.getInMemorySorting(), query.getFilter().orElse(null));
+	<T, F> Query<T, F> alignQuery(Query<T, F> query) {
+		BigInteger pageNumber = BigInteger.valueOf(this.pageNumber);
+		BigInteger pageLength = BigInteger.valueOf(this.pageLength);
+		BigInteger queryOffset = BigInteger.valueOf(query.getOffset());
+		BigInteger queryLimit = BigInteger.valueOf(query.getLimit());
+
+		BigInteger maxInteger = BigInteger
+				.valueOf(Integer.MAX_VALUE);
+
+		BigInteger offset = pageNumber
+				.multiply(pageLength)
+				.add(queryOffset)
+				.max(BigInteger.ZERO)
+				.min(maxInteger);
+
+		BigInteger limit = pageLength.subtract(queryOffset)
+				.min(queryLimit)
+				.max(BigInteger.ZERO)
+				.min(maxInteger);
+
+		return new Query<>(
+				offset.intValue(),
+				limit.intValue(),
+				query.getSortOrders(),
+				query.getInMemorySorting(),
+				query.getFilter().orElse(null));
 	}
 
-	int getSizeOfPage(Query<T, ?> query) {
+	int getSizeOfPage(int backendSize) {
 		int limit = pageLength;
-		if (pageNumber == getPageCount() - 1) {
-			limit = pagedDataProvider.getBackendSize() - pageLength * pageNumber;
+
+		if (pageNumber >= getPageCount(backendSize) - 1) {
+			limit = backendSize - pageLength * pageNumber;
 		}
+
 		return limit;
 	}
 }
