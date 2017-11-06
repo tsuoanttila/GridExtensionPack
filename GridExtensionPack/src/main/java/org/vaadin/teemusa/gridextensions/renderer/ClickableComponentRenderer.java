@@ -32,7 +32,7 @@ public class ClickableComponentRenderer<T> extends ClickableRenderer<T, Componen
 
     @Override
     public JsonValue encode(Component value) {
-        return value != null ? Json.create(value.getConnectorId()) : null;
+    	return (value != null && getSession() != null) ? Json.create(value.getConnectorId()) : null;
     }
 
     @Override
