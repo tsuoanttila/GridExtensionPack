@@ -12,8 +12,6 @@ import elemental.json.JsonObject;
 @Connect(org.vaadin.teemusa.gridextensions.renderer.ClickableComponentRenderer.class)
 public class ClickableComponentRendererConnector extends ClickableRendererConnector<String> {
 
-	private static final long serialVersionUID = 2568478589874485335L;
-
 	@Override
 	public ClickableComponentRenderer getRenderer() {
 		return (ClickableComponentRenderer) super.getRenderer();

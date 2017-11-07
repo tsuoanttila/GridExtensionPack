@@ -26,6 +26,7 @@ public class DemoUI extends UI {
         tabSheet.addTab(new DemoContentLayout(), "main demo");
         tabSheet.addTab(new SidebarMenuExtensionLayout(), "sidebar extension demo");
         tabSheet.addTab(new HeaderWrapExtensionLayout(), "header wrap demo");
+        tabSheet.addTab(new ClickableComponentRendererLayout(), "Clickable comp click demo");
         tabSheet.setSizeFull();
         setContent(tabSheet);
     }
