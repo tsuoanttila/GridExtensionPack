@@ -3,6 +3,7 @@ package org.vaadin.teemusa.gridextensions.demo;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.shared.ui.ContentMode;
 import org.vaadin.teemusa.gridextensions.renderer.ClickableComponentRenderer;
 
 import com.vaadin.shared.MouseEventDetails.MouseButton;
@@ -16,32 +17,52 @@ public class ClickableComponentRendererLayout extends VerticalLayout {
 
 	public ClickableComponentRendererLayout() {
 		super();
-		
-		Grid<RowData> grid = new Grid<>();
-		grid.addColumn(RowData::getId);
-		grid.addColumn(RowData::getName);
-		grid.addColumn(this::createColumnComponent, getRenderer(grid));
-		
-		List<RowData> data = new ArrayList<RowData>();
-		data.add(new RowData("test1", "One", "Label One"));
-		data.add(new RowData("test2", "Two", "Label Two"));
-		data.add(new RowData("test3", "Three", "Label Three"));
-		data.add(new RowData("test4", "Four", "Label Four"));
-		grid.setItems(data);
-		
-		addComponent(grid);
+        createInfoLabel();
+        createGrid();
 	}
-	
-	private ClickableComponentRenderer<RowData> getRenderer(Grid<RowData> grid) {
+
+    private void createInfoLabel() {
+	    String infoText = "<i>Info: The grey background in the Label column represents the root component of the custom component</i>";
+	    Label infoLabel = new Label(infoText, ContentMode.HTML);
+        infoLabel.setWidth("50%");
+
+        addComponent(infoLabel);
+    }
+
+    private void createGrid() {
+        Grid<RowData> grid = new Grid<>();
+        grid.addColumn(RowData::getId);
+        grid.addColumn(RowData::getName);
+
+        Grid.Column<RowData, Component> labelColumn = grid.addColumn(this::createColumnComponent, getRenderer(grid));
+        labelColumn.setCaption("Label in hlayout");
+
+        Grid.Column<RowData, Boolean> canForwardClickColumn = grid.addColumn(RowData::getForwardLabelClicksToGrid, booleanValue -> booleanValue ? "Yes" : "No");
+        canForwardClickColumn.setCaption("Label column will forward selection to grid");
+
+        List<RowData> data = new ArrayList<RowData>();
+        data.add(new RowData("test1", "One", "Label One", true));
+        data.add(new RowData("test2", "Two", "Label Two", false));
+        data.add(new RowData("test3", "Three", "Label Three", true));
+        data.add(new RowData("test4", "Four", "Label Four", false));
+        grid.setItems(data);
+
+        grid.setWidth("60%");
+
+        addStyleName("clickableComponentRendererForGridTest");
+        addComponent(grid);
+    }
+
+    private ClickableComponentRenderer<RowData> getRenderer(Grid<RowData> grid) {
 		ClickableComponentRenderer<RowData> renderer = new ClickableComponentRenderer<>();
-		renderer.forwardSelection(grid);
-		renderer.addClickListener(event -> event.getItem().setLabelBool(MouseButton.LEFT.equals(event.getButton())));
+		renderer.forwardSelection(grid, item -> item.forwardLabelClicksToGrid);
 		return renderer;
 	}
 	
 	private Component createColumnComponent(RowData rowData) {
 		HorizontalLayout layout = new HorizontalLayout();
 		layout.addComponent(new Label(rowData.getLabelText()));
+        layout.addStyleName("clickableLabel");
 		return layout;
 	}
 	
@@ -50,13 +71,13 @@ public class ClickableComponentRendererLayout extends VerticalLayout {
 		private final String id;
 		private final String name;
 		private final String labelText;
+		private final boolean forwardLabelClicksToGrid;
 		
-		private boolean labelBool = false;
-		
-		public RowData(String id, String name, String labelText) {
+		public RowData(String id, String name, String labelText, boolean forwardLabelClicksToGrid) {
 			this.id = id;
 			this.name = name;
 			this.labelText = labelText;
+			this.forwardLabelClicksToGrid = forwardLabelClicksToGrid;
 		}
 
 		public String getId() {
@@ -71,14 +92,10 @@ public class ClickableComponentRendererLayout extends VerticalLayout {
 			return labelText;
 		}
 
-		public boolean isLabelBool() {
-			return labelBool;
+		public boolean getForwardLabelClicksToGrid() {
+			return forwardLabelClicksToGrid;
 		}
 
-		public void setLabelBool(boolean labelBool) {
-			this.labelBool = labelBool;
-		}
-		
 	}
 
 }

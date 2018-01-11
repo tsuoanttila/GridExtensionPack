@@ -35,6 +35,9 @@ public abstract class ClickableComponentRenderer extends ClickableRenderer<Strin
     public abstract ApplicationConnection getConnectorConnection();
 
     private void addClickHandler(SimplePanel panel) {
+        // Panel itself
+        panel.addDomHandler(this, ClickEvent.getType());
+        // Iterate over children
         panel.iterator().forEachRemaining(widget -> widget.addDomHandler(this, ClickEvent.getType()));
     }
 
