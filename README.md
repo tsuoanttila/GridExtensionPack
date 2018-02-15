@@ -117,18 +117,19 @@ model.setMode(TableSelectionMode.SIMPLE);
 grid.setSelectionModel(model);
 ```
 
-Using the PagedContainer needs an existing Indexed container to wrap:
+Using the PagedDataProvider:
 
 ```java
-// This is your existing container
-Container.Indexed myContainer;
-PagedContainer container = new PagedContainer(myContainer);
-Grid grid = new Grid(container);
+// This is your existing data
+PagedDataProvider<?> dataProvider = new PagedDataProvider<>(
+				DataProvider.ofCollection(data));
+Grid grid = new Grid();
+grid.setDataProvider(dataProvider);
 
-// PagedContainer has a helper class for page manipulation
+// PagedDataProvider has a helper class for page manipulation
 PagingControls controls = container.setGrid(grid);
 
-// Set container (and grid with it) to certain size
+// Set grid to certain size
 controls.setPageLength(5);
 
 // Jump to fourth page (0-based indexing)
@@ -148,7 +149,13 @@ TableSelectionModel gives you client-side selection UX similar
 to Table. It supports Multiple selection in simple mode and with ctrl + 
 click.
 
-### PagedContainer
+### PagedDataProvider
+
+A simple data provider wrap. Works through paging and provides its own PagingControls for a cleaner API.
+
+This does not work with Table.
+
+### PagedContainer (Vaadin 7.x only)
 
 A simple Container wrap on top of any indexed container. Works through 
 paging and provides its own PagingControls for a cleaner API.
