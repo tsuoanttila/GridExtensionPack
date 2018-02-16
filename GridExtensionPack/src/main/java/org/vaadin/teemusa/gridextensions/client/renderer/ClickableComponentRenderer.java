@@ -9,6 +9,10 @@ import com.vaadin.client.ConnectorMap;
 import com.vaadin.client.renderers.ClickableRenderer;
 import com.vaadin.client.widget.grid.RendererCellReference;
 
+/**
+ * Combination of client component renderer contained inside {@link com.vaadin.client.connectors.grid.ComponentRendererConnector} and current super class {@link ClickableRenderer}
+ * @since 2.1
+ */
 public abstract class ClickableComponentRenderer extends ClickableRenderer<String, SimplePanel> {
 
     @Override

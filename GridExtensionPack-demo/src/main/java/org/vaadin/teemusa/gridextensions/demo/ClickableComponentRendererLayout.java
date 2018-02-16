@@ -24,7 +24,7 @@ public class ClickableComponentRendererLayout extends VerticalLayout {
     private void createInfoLabel() {
 	    String infoText = "<i>Info: The grey background in the Label column represents the root component of the custom component</i>";
 	    Label infoLabel = new Label(infoText, ContentMode.HTML);
-        infoLabel.setWidth("50%");
+	    infoLabel.setWidth("50%");
 
         addComponent(infoLabel);
     }
@@ -62,7 +62,7 @@ public class ClickableComponentRendererLayout extends VerticalLayout {
 	private Component createColumnComponent(RowData rowData) {
 		HorizontalLayout layout = new HorizontalLayout();
 		layout.addComponent(new Label(rowData.getLabelText()));
-        layout.addStyleName("clickableLabel");
+		layout.addStyleName("clickableLabel");
 		return layout;
 	}
 	

@@ -19,8 +19,10 @@ import java.util.function.Predicate;
 
 /**
  * It has to extend from {@link ComponentRenderer} because there is some hardcoded logic in {@link Grid.Column} that checks for instanceof ComponentRenderer.
+ * <p>
  * The logic handling the click events is copied from {@link ClickableRenderer}
  * @param <T> Grid row type
+ * @since 2.1
  */
 
 public class ClickableComponentRenderer<T extends Object> extends ComponentRenderer {
@@ -128,7 +130,6 @@ public class ClickableComponentRenderer<T extends Object> extends ComponentRende
          * Returns the item of the row where the click event originated.
          *
          * @return the item of the clicked row
-         * @since 8.0
          */
         public T getItem() {
             return item;

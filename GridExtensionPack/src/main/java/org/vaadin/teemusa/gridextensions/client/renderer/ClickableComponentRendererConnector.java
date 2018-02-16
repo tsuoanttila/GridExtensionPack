@@ -10,6 +10,12 @@ import com.vaadin.shared.ui.Connect;
 import com.vaadin.shared.ui.grid.renderers.RendererClickRpc;
 import elemental.json.JsonObject;
 
+/**
+ * Connector class for {@link org.vaadin.teemusa.gridextensions.renderer.ClickableComponentRenderer}
+ * <p>
+ * Click logic is extracted from {@link com.vaadin.client.connectors.ClickableRendererConnector}
+ * @since 2.1
+ */
 @Connect(org.vaadin.teemusa.gridextensions.renderer.ClickableComponentRenderer.class)
 public class ClickableComponentRendererConnector extends ComponentRendererConnector {
 
