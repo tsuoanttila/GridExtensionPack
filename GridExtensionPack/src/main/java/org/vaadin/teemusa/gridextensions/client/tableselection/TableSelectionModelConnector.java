@@ -61,6 +61,9 @@ public class TableSelectionModelConnector extends MultiSelectionModelConnector {
 		case SHIFT:
 			handler = new ShiftCtrlClickSelectionHandler(grid, getRpcProxy(ShiftSelectRpc.class));
 			break;
+		case SINGLE:
+			handler = new SingleClickSelectionHandler(grid);
+			break;
 		case NONE:
 		default:
 			return;
