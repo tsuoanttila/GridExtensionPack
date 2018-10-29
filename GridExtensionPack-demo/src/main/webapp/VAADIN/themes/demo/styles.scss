@@ -51,4 +51,21 @@ $darkgreen: darken($green, 30%);
        	    cursor: default;
        	}
     }
+
+    .clickableComponentRendererForGridTest {
+
+        .clickableLabel {
+            padding: 2px;
+            border: 1px solid grey;
+        }
+
+        .component-wrap {
+            background-color: lightgrey;
+        }
+
+        .v-grid-row-selected .component-wrap {
+            background-color: transparent;
+        }
+    }
+
 }

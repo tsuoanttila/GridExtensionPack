@@ -14,7 +14,7 @@ public class WrappingGrid extends AbstractExtension {
 	 * Constructor to create header wrapping extension for given Grid, uses header row height of the Valo theme
 	 * 
 	 * @param grid The Grid where you want to apply header wrapping to
-	 * @return
+	 * @return the WrappingGrid
 	 */
 	public static WrappingGrid extend(Grid grid) {
 		WrappingGrid g = new WrappingGrid();
@@ -27,7 +27,7 @@ public class WrappingGrid extends AbstractExtension {
 	 * 
 	 * @param grid The Grid where you want to apply header wrapping to
 	 * @param newDefaultRowHeight Header row height of the theme in px, e.g. Valo = 38, Reindeer = 21
-	 * @return
+	 * @return the WrappingGrid
 	 */
 	public static WrappingGrid extend(Grid grid, int newDefaultRowHeight) {
 		WrappingGrid g = new WrappingGrid();
