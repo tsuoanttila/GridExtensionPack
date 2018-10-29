@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/gridextensionpack-add-on)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/gridextensionpack-add-on.svg)](https://vaadin.com/directory/component/gridextensionpack-add-on)
+
 # GridExtensionPack Add-on for Vaadin
 
 GridExtensionPack is a collection of more or less useful extensions for tweaking 
