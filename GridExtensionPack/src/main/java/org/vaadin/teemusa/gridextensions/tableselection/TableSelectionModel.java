@@ -1,22 +1,19 @@
 package org.vaadin.teemusa.gridextensions.tableselection;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.BinaryOperator;
-
+import com.vaadin.data.provider.Query;
+import com.vaadin.data.provider.QuerySortOrder;
+import com.vaadin.server.SerializableComparator;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.components.grid.GridSelectionModel;
+import com.vaadin.ui.components.grid.MultiSelectionModelImpl;
 import org.vaadin.teemusa.gridextensions.SelectGrid;
 import org.vaadin.teemusa.gridextensions.client.tableselection.ShiftSelectRpc;
 import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState;
 import org.vaadin.teemusa.gridextensions.client.tableselection.TableSelectionState.TableSelectionMode;
 
-import com.vaadin.data.provider.Query;
-import com.vaadin.data.provider.QuerySortOrder;
-import com.vaadin.server.AbstractClientConnector;
-import com.vaadin.server.SerializableComparator;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.components.grid.GridSelectionModel;
-import com.vaadin.ui.components.grid.MultiSelectionModelImpl;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.function.BinaryOperator;
 
 /**
  * TableSelectModel provides {@link Grid} selection UX options to make it behave
@@ -80,5 +77,31 @@ public class TableSelectionModel<T> extends MultiSelectionModelImpl<T> {
 				getParent().getDataProvider().fetch(new Query<>(start, length, sortProperties, inMemorySorting, null));
 			}
 		});
+	}
+
+	/**
+	 * In this SelectionModel we want to avoid the IllegalStateException thrown by super call
+         * verifyUserCanSelectAll();
+	 */
+	@Override
+	protected void onDeselectAll(boolean userOriginated) {
+		if (userOriginated) {
+			// all selected state has been update in client side already
+			getState(false).allSelected = false;
+			getUI().getConnectorTracker().getDiffState(this).put("allSelected",
+					false);
+		} else {
+			getState().allSelected = false;
+		}
+		Field fs = null;
+		try {
+			fs = this.getClass().getSuperclass().getDeclaredField("selection");
+			fs.setAccessible(true);
+
+			List<T> selection = (List<T>) fs.get(this);
+			updateSelection(Collections.emptySet(), new LinkedHashSet<>(selection), userOriginated);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 }
