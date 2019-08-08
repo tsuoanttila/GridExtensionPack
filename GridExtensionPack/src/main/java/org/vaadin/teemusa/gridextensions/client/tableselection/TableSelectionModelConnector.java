@@ -1,7 +1,5 @@
 package org.vaadin.teemusa.gridextensions.client.tableselection;
 
-import org.vaadin.teemusa.gridextensions.tableselection.TableSelectionModel;
-
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.annotations.OnStateChange;
@@ -9,10 +7,9 @@ import com.vaadin.client.connectors.grid.MultiSelectionModelConnector;
 import com.vaadin.client.renderers.Renderer;
 import com.vaadin.client.widget.grid.events.BodyClickHandler;
 import com.vaadin.client.widgets.Grid;
-import com.vaadin.shared.Range;
 import com.vaadin.shared.ui.Connect;
-
 import elemental.json.JsonObject;
+import org.vaadin.teemusa.gridextensions.tableselection.TableSelectionModel;
 
 @Connect(TableSelectionModel.class)
 public class TableSelectionModelConnector extends MultiSelectionModelConnector {
@@ -29,10 +26,8 @@ public class TableSelectionModelConnector extends MultiSelectionModelConnector {
 	private HandlerRegistration clickHandler;
 
 	@Override
-	protected void initSelectionModel() {
-		super.initSelectionModel();
-
-		getGrid().setSelectionModel(new CustomSelectionModel());
+	protected MultiSelectionModel createSelectionModel() {
+		return new CustomSelectionModel();
 	}
 
 	@Override
