@@ -5,7 +5,7 @@
 	<groupId>org.vaadin.teemusa</groupId>
 	<artifactId>gridextensionpack-root</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.2</version>
+	<version>2.0.3</version>
 	<name>GridExtensionPack Add-on Root Project</name>
 
 	<modules>
