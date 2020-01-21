@@ -23,14 +23,14 @@ import java.util.function.BinaryOperator;
  * <p>
  * This is a SelectionModel for SelectGrid, use
  * {@link SelectGrid#setSelectionModel(GridSelectionModel)} to take it into use.
- * 
+ *
  * @author Teemu Suo-Anttila
  */
 public class TableSelectionModel<T> extends MultiSelectionModelImpl<T> {
 
 	/**
 	 * Set the TableSelectionMode to use with this extension.
-	 * 
+	 *
 	 * @param mode
 	 *            table-like selection mode
 	 */
@@ -67,14 +67,17 @@ public class TableSelectionModel<T> extends MultiSelectionModelImpl<T> {
 					 */
 					return comparator1.thenComparing(comparator2)::compare;
 				};
-				Comparator<T> inMemorySorting = getParent().getSortOrder().stream()
+				final Grid<T> grid = getParent();
+				Comparator<T> inMemorySorting = grid.getSortOrder().stream()
 						.map(order -> order.getSorted().getComparator(order.getDirection()))
 						.reduce((x, y) -> 0, operator);
 
 				List<QuerySortOrder> sortProperties = new ArrayList<>();
-				getParent().getSortOrder().stream().map(order -> order.getSorted().getSortOrder(order.getDirection()))
+				grid.getSortOrder().stream().map(order -> order.getSorted().getSortOrder(order.getDirection()))
 						.forEach(s -> s.forEach(sortProperties::add));
-				getParent().getDataProvider().fetch(new Query<>(start, length, sortProperties, inMemorySorting, null));
+				grid.getDataProvider().fetch(new Query<>(start, length, sortProperties, inMemorySorting, null))
+						.forEach(grid::select);
+
 			}
 		});
 	}
